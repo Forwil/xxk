@@ -1,28 +1,34 @@
-$def with(i,comments)
+$def with(i,comments,fd)
 	<div>
 	<hr/>
 	<div style="float: left; border:1px dotted;"><img width="120px" height="120px"src="$i[1]">
 	</div>
 	<div style="margin-left: 150px;">
-		<p>
+	<ul>
+		<li>
 			<span>name:</span>
 			<span><a href="/book?id=$i[0]">$i[2]</a></span>
-		</p>
-		<p>
+		</li>
+		<li>
 			<span>author:</span>
 			<span>$i[3]</span>
-		</p>
-		<p>
+		</li>
+		<li>
 			<span>country:</span>
 			<span>$i[4]</span>
-		</p>
-		<p>
+		</li>
+		<li>
 			<span>language:</span>
 			<span>$i[5]</span>
-		</p>
+		</li>
+	</ul>
 		<p>
 			<span>comments:</span>
 			<span><b>$i[6]</b></span>
+		</p>
+		<p>
+		$if fd == 1:
+			<a href="delete?type=book&id=$i[0]">delete</a>
 		</p>
 	</div>
 	</div>

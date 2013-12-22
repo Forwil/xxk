@@ -1,43 +1,47 @@
-$def with(i,comments)
+$def with(i,comments,fd)
 	<div>
 	<hr/>
 		<div style="float: left; border:1px dotted;">
 			<img width="120px" height="120px"src="$i[1]">
 		</div>
-		<div style="float: left; margin-left: 50px; padding:2px;">
-			<p>
+		<div style="margin-left: 150px;">
+		<ul>
+			<li>
 				<span>name:</span>
 				<span><a href="/moive?id=$i[0]">$i[2]</a></span>
-			</p>
-			<p>
+			</li>
+			<li>
 				<span>director:</span>
 				<span>$i[3]</span>
-			</p>
-			<p>
-				<span>date;</span>
+			</li>
+			<li>
+				<span>date:</span>
 				<span>$i[4]</span>
-			</p>
-			<p>
+			</li>
+			<li>
 				<span>language;</span>
 				<span>$i[5]</span>
-			</p>
-		</div>
-		<div style="float: left; margin-left:50px;">
-			<p>
+			</li>
+			<li>
 				<span>length:</span>
 				<span>$i[6]</span>
-			</p>
-			<p>
+			</li>
+			<li>
 				<span>actor:</span>
 				<span>$i[7]</span>
-			</p>
-			<p>
+			</li>
+			<li>
 				<span>abstract:</span>
 				<span>$i[8]</span>
-			</p>
+			</li>
+		</ul>
 			<p>
 				<span>comments:</span>
 				<span><b>$i[9]</b></span>
+			</p>
+			<p>
+			$if fd == 1:
+				<a href="delete?type=moive&id=$i[0]">delete</a>
 			</p>
 		</div>
 	</div>

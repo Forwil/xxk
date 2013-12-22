@@ -1,14 +1,27 @@
 $def with(comments)
 <div style="margin-top:100px;width:70%">
-$if comments is not None:
+$if comments != []:
 	$for i in comments:
 		<div>
 			<div>
 				<b>$i["name"]:</b>
-				<span style="float:right;color:gray;">$i["date"]</span>
+				<span style="float:right;color:gray;">$i["date"]
+				$if i.get("del","")==1:
+					<a href="/delete?type=comment&id=$i["id"]" >delete</a>
+				</span>
 			</div>
 			<div class="well" style="margin-left:10%;">
 				$i["content"]
 			</div>
 		</div>
+$else:
+        <div>
+                <div>
+                        <b></b>
+                        <span style="float:right;color:gray;"></span>
+                </div>
+                <div class="well" style="margin-left:10%;">
+                    Nobody comment
+                </div>
+        </div>
 </div>

@@ -76,10 +76,10 @@ item_id int,
 type varchar(10),
 content varchar(500),
 time datetime,
-primary key (user_id,item_id,type,time)
+id int primary key auto_increment
 );
 
-create mo_b(
+create tablemo_b(
 moive_id int,
 book_id int,
 foreign key (moive_id) references moive(id),
@@ -87,7 +87,7 @@ foreign key (book_id) references book(id),
 primary key (moive_id,book_id)
 );
 
-create mo_m(
+create table mo_m(
 moive_id int,
 music_id int,
 foreign key (moive_id) references moive(id),
@@ -95,7 +95,7 @@ foreign key (music_id) references music(id),
 primary key (moive_id,music_id)
 );
 
-create manage(
+create table manage(
 admin_id int,
 foreign key (admin_id) references admin(id),
 item_id int,

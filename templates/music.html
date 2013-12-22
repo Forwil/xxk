@@ -1,28 +1,35 @@
-$def with(i,comments)
+$def with(i,comments,fd)
 	<div>
 	<hr/>
-		<div style="float: left; border:1px dotted;"><img width="120px" height="120px"src="$i[1]">
+		<div style="float: left; border:1px dotted;">
+			<img width="120px" height="120px"src="$i[1]">
 		</div>
-		<div style="margin-left:150px;">
-			<p>
+			<div style="margin-left:150px;">
+		<ul>
+			<li>
 				<span>name:</span>
 				<span><a href="/music?id=$i[0]">$i[2]</a></span>
-			</p>
-			<p>
+			</li>
+			<li>
 				<span>singer:</span>
 				<span>$i[3]</span>
-			</p>
-			<p>
+			</li>
+			<li>
 				<span>lrc_author:</span>
 				<span>$i[4]</span>
-			</p>
-			<p>
+			</li>
+			<li>
 				<span>rhythm_author:</span>
 				<span>$i[5]</span>
-			</p>
+			</li>
+		</ul>
 			<p>
 				<span>comments</span>
 				<span><b>$i[6]</b></span>
+			</p>
+			<p>
+			$if fd == 1:
+				<a href="delete?type=music&id=$i[0]">delete</a>
 			</p>
 		</div>
 	</div>
