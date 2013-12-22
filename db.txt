@@ -23,6 +23,7 @@ token varchar(32)
 create table moive
 (
 id int primary key auto_increment,
+url varchar(100),
 name varchar(30) not null,
 director varchar(30),
 date date,
@@ -36,6 +37,7 @@ comments_num int(10)
 create table music
 (
 id int primary key auto_increment,
+url varchar(100),
 name varchar(30) not null,
 singer varchar(30),
 lrc varchar(30),
@@ -46,12 +48,13 @@ comments_num int(10)
 create table book
 (
 id int primary key auto_increment,
+url varchar(100),
 name varchar(30) not null,
 author varchar(30),
 country varchar(30),
 language varchar(30),
 comments_num int(10)
-)
+);
 
 create table group(
 id int primary key auto_increment,
