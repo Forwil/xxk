@@ -1,28 +1,29 @@
-$def with(musics)
-$for i in musics:
+$def with(books)
+$for i in books:
 	<div>
 	<hr/>
 	<span style="float: left; border:1px dotted;"><img width="120px" height="120px"src="$i[1]"></span>
-	<span >
+	<span style="">
 		<p>
 			<span>name:</span>
-			<span><a href="/music?id=$i[0]">$i[2]</a></span>
+			<span><a href="/book?id=$i[0]">$i[2]</a></span>
 		</p>
 		<p>
-			<span>singer:</span>
+			<span>author:</span>
 			<span>$i[3]</span>
 		</p>
 		<p>
-			<span>lrc_author:</span>
+			<span>country:</span>
 			<span>$i[4]</span>
 		</p>
 		<p>
-			<span>rhythm_author:</span>
+			<span>language:</span>
 			<span>$i[5]</span>
 		</p>
 		<p>
-			<span>comments</span>
-			<span><b>$i[6]</b></span>
+			<span>comments:</span>
+			<span>$i[6]</span>
 		</p>
 	</span>
 	</div>
+

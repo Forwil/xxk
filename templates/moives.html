@@ -1,0 +1,29 @@
+$def with(moives)
+$for i in moives:
+	<div>
+	<hr/>
+	<span style="float: left; border:1px dotted;"><img width="120px" height="120px"src="$i[1]"></span>
+	<span style="">
+		<p>
+			<span>name:</span>
+			<span><a href="/moive?id=$i[0]">$i[2]</a></span>
+		</p>
+		<p>
+			<span>director:</span>
+			<span>$i[3]</span>
+		</p>
+		<p>
+			<span>language;</span>
+			<span>$i[5]</span>
+		</p>
+		<p>
+			<span>abstract:</span>
+			<span>$i[8]</span>
+		</p>
+		<p>
+			<span>comments:</span>
+			<span>$i[9]</span>
+		</p>
+	</span>
+	</div>
+

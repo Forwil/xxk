@@ -30,6 +30,7 @@ def is_exist_user(email):
 def new_user(user):
 	token = get_token(user["email"])
 	sql = "insert into user value(null,'%s','%s','%s','%s','%s','%s','%s','%s');"%(user['name'],user['email'],user['passwd'],user['gender'],user['birth'],user['school'],user['major'],token)
+	print sql
 	cur = conn.cursor()	
 	cur.execute(sql)
 	conn.commit()
@@ -108,6 +109,45 @@ def find_music(name):
 		sql = "select * from music;"
 	else:
 		sql = "select * from music where name='%s';" %(name)
+	print sql
+	cur = conn.cursor()
+	cur.execute(sql)
+	result = []
+	while True:
+		t = cur.fetchone()
+		if t!=None:
+			result.append(t)
+		else:
+			break
+	conn.commit()
+	cur.close()
+	return result
+
+def find_moive(name):
+	if name=="":
+		sql = "select * from moive;"
+	else:
+		sql = "select * from moive where name='%s';" %(name)
+	print sql
+	cur = conn.cursor()
+	cur.execute(sql)
+	result = []
+	while True:
+		t = cur.fetchone()
+		if t!=None:
+			result.append(t)
+		else:
+			break
+	conn.commit()
+	cur.close()
+	return result
+
+def find_book(name):
+	if name=="":
+		sql = "select * from book;"
+	else:
+		sql = "select * from book where name='%s';" %(name)
+	print sql
 	cur = conn.cursor()
 	cur.execute(sql)
 	result = []
@@ -128,13 +168,13 @@ class music:
 		pass
 class moive:
 	def GET(self):
-		pass
+		return my_page(render.moives(find_moive("")))
 	def POST(self):
 		pass
 
 class book:
 	def GET(self):
-		pass
+		return my_page(render.books(find_book("")))
 	def POST(self):
 		pass
 
@@ -152,11 +192,13 @@ class new:
 		i = web.input()
 		if i["type"] == "3":
 			new_book(i)
+			web.seeother("/book")
 		elif i["type"] == "2":
 			new_moive(i)
+			web.seeother("/moive")
 		else:
 			new_music(i)
-		return i
+			web.seeother("/music")
 
 class signup:
 	def GET(self):
@@ -173,8 +215,12 @@ class signup:
 class search:
 	def POST(self):
 		i = web.input()
-		print i
-		return i
+		if i['type'] == "3":
+			return my_page(render.books(find_book(i["name"])))
+		elif i['type'] == "2":
+			return my_page(render.moives(find_moive(i["name"])))
+		else:
+			return my_page(render.musics(find_music(i["name"])))
 
 class index:
 	def GET(self):
