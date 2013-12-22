@@ -2,8 +2,9 @@ $def with(moives)
 $for i in moives:
 	<div>
 	<hr/>
-	<span style="float: left; border:1px dotted;"><img width="120px" height="120px"src="$i[1]"></span>
-	<span style="">
+	<div style="float: left; border:1px dotted;"><img width="120px" height="120px"src="$i[1]">
+	</div>
+	<div style="margin-left: 150px;">
 		<p>
 			<span>name:</span>
 			<span><a href="/moive?id=$i[0]">$i[2]</a></span>
@@ -22,8 +23,8 @@ $for i in moives:
 		</p>
 		<p>
 			<span>comments:</span>
-			<span>$i[9]</span>
+			<span><b>$i[9]</b></span>
 		</p>
-	</span>
+	</div>
 	</div>
 

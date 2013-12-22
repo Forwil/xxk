@@ -1,0 +1,48 @@
+$def with(i,comments)
+	<div>
+	<hr/>
+		<div style="float: left; border:1px dotted;">
+			<img width="120px" height="120px"src="$i[1]">
+		</div>
+		<div style="float: left; margin-left: 50px; padding:2px;">
+			<p>
+				<span>name:</span>
+				<span><a href="/moive?id=$i[0]">$i[2]</a></span>
+			</p>
+			<p>
+				<span>director:</span>
+				<span>$i[3]</span>
+			</p>
+			<p>
+				<span>date;</span>
+				<span>$i[4]</span>
+			</p>
+			<p>
+				<span>language;</span>
+				<span>$i[5]</span>
+			</p>
+		</div>
+		<div style="float: left; margin-left:50px;">
+			<p>
+				<span>length:</span>
+				<span>$i[6]</span>
+			</p>
+			<p>
+				<span>actor:</span>
+				<span>$i[7]</span>
+			</p>
+			<p>
+				<span>abstract:</span>
+				<span>$i[8]</span>
+			</p>
+			<p>
+				<span>comments:</span>
+				<span><b>$i[9]</b></span>
+			</p>
+		</div>
+	</div>
+$:comments
+<form action="/moive?id=$i[0]" method="post">
+	<textarea style="resize:none;width:70%;" placeholder="Put your comment" name="content"></textarea>
+	<button type="submit" class="btn btn-primary">Submit</button>
+</form>

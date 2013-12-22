@@ -1,0 +1,14 @@
+$def with(comments)
+<div style="margin-top:100px;width:70%">
+$if comments is not None:
+	$for i in comments:
+		<div>
+			<div>
+				<b>$i["name"]:</b>
+				<span style="float:right;color:gray;">$i["date"]</span>
+			</div>
+			<div class="well" style="margin-left:10%;">
+				$i["content"]
+			</div>
+		</div>
+</div>

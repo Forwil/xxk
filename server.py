@@ -3,6 +3,7 @@ import web
 import sys
 import MySQLdb
 import hashlib
+import time
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -46,6 +47,21 @@ def new_book(book):
 	cur.close()
 	return 
 
+def get_now_id():
+	token = web.cookies().get("token","") 
+	sql = "select * from user where token='%s';" %(token)
+	print sql		
+	cur = conn.cursor()	
+	cur.execute(sql)
+	result =cur.fetchone()
+	conn.commit()
+	cur.close()
+	if result == None:
+		return None
+	else:
+		return result[0]
+
+
 def new_moive(moive):
 	sql = "insert into moive value(null,'%s','%s','%s','%s','%s','%s','%s','%s',0);"%(moive["url"],moive["name"],moive["director"],moive["date"],moive["language"],moive["length"],moive["actor"],moive["abstract"])
 	print sql		
@@ -64,14 +80,23 @@ def new_music(music):
 	cur.close()
 	return 
 
+def new_comment(user_id,item_id,typ,content):
+	t = time.strftime("%Y-%m-%d %H:%M:%S")
+	sql = "insert into comment value('%s','%s','%s','%s','%s');" % (user_id,item_id,typ,content,t)
+	print sql		
+	cur = conn.cursor()	
+	cur.execute(sql)
+	conn.commit()
+	cur.close()
+	return 
+
 def login(name,token):
 	web.setcookie('name',name,3600)
 	web.setcookie('token',token,3600)
 	return 
 
 def login_admin(name,token):
-	web.setcookie('name',name,3600)
-	web.setcookie('token',token,3600)
+	login(name,token)
 	web.setcookie('admin',"1",3600)
 	return 
 
@@ -104,11 +129,11 @@ def my_page(body):
 	token = web.cookies().get("token","")
 	return render.layout(render.header(user,token),body)
 
-def find_music(name):
+def find_by_name(typ,name):
 	if name=="":
-		sql = "select * from music;"
+		sql = "select * from %s;"%(typ)
 	else:
-		sql = "select * from music where name='%s';" %(name)
+		sql = "select * from %s where name='%s';" %(typ,name)
 	print sql
 	cur = conn.cursor()
 	cur.execute(sql)
@@ -122,31 +147,28 @@ def find_music(name):
 	conn.commit()
 	cur.close()
 	return result
+
+def find_by_id(typ,id):
+	sql = "select * from %s where id=%s;"%(typ,id)
+	print sql
+	cur = conn.cursor()
+	cur.execute(sql)
+	result = cur.fetchone()
+	conn.commit()
+	cur.close()
+	return result
+
+def find_music(name):
+	return find_by_name("music",name)
 
 def find_moive(name):
-	if name=="":
-		sql = "select * from moive;"
-	else:
-		sql = "select * from moive where name='%s';" %(name)
-	print sql
-	cur = conn.cursor()
-	cur.execute(sql)
-	result = []
-	while True:
-		t = cur.fetchone()
-		if t!=None:
-			result.append(t)
-		else:
-			break
-	conn.commit()
-	cur.close()
-	return result
+	return find_by_name("moive",name)
 
 def find_book(name):
-	if name=="":
-		sql = "select * from book;"
-	else:
-		sql = "select * from book where name='%s';" %(name)
+	return find_by_name("book",name)
+
+def find_comments(typ,id):
+	sql = "select * from comment where type='%s' and item_id=%s order by time;" % (typ,id)	
 	print sql
 	cur = conn.cursor()
 	cur.execute(sql)
@@ -157,26 +179,59 @@ def find_book(name):
 			result.append(t)
 		else:
 			break
+	resdis = []
+	for i in range(0,len(result)):
+		resdis.append({})
+		resdis[i]["name"] = find_by_id("user",str(result[i][0]))[1]
+		resdis[i]["content"] = result[i][3]
+		resdis[i]["date"] = result[i][4]
+	print resdis
 	conn.commit()
 	cur.close()
-	return result
+	return resdis
 
 class music:
 	def GET(self):
+		i = web.input()
+		if "id" in i:
+			result = find_by_id("music",i["id"])
+			comm = find_comments("music",i["id"])
+			return my_page(render.music(result,render.comments(comm)))
 		return my_page(render.musics(find_music("")))
 	def POST(self):
-		pass
+		i = web.input()
+		nowid = get_now_id()
+		new_comment(nowid,i["id"],"music",i["content"])
+		web.seeother("/music?id=%s" % (i["id"]))
+
 class moive:
 	def GET(self):
+		i = web.input()
+		if "id" in i:
+			result = find_by_id("moive",i["id"])
+			comm = find_comments("moive",i["id"])
+			return my_page(render.book(result,render.comments(comm)))
 		return my_page(render.moives(find_moive("")))
+
 	def POST(self):
-		pass
+		i = web.input()
+		nowid = get_now_id()
+		new_comment(nowid,i["id"],"moive",i["content"])
+		web.seeother("/moive?id=%s" % (i["id"]))
 
 class book:
 	def GET(self):
+		i = web.input()
+		if "id" in i:
+			result = find_by_id("book",i["id"])
+			comm = find_comments("book",i["id"])
+			return my_page(render.book(result,render.comments(comm)))
 		return my_page(render.books(find_book("")))
 	def POST(self):
-		pass
+		i = web.input()
+		nowid = get_now_id()
+		new_comment(nowid,i["id"],"book",i["content"])
+		web.seeother("/book?id=%s" % (i["id"]))
 
 class new:
 	def GET(self):

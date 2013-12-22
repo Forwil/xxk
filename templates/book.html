@@ -1,5 +1,4 @@
-$def with(books)
-$for i in books:
+$def with(i,comments)
 	<div>
 	<hr/>
 	<div style="float: left; border:1px dotted;"><img width="120px" height="120px"src="$i[1]">
@@ -27,4 +26,8 @@ $for i in books:
 		</p>
 	</div>
 	</div>
-
+$:comments
+<form action="/book?id=$i[0]" method="post">
+	<textarea style="resize:none;width:70%;" placeholder="Put your comment" name="content"></textarea>
+	<button type="submit" class="btn btn-primary">Submit</button>
+</form>
