@@ -1,44 +1,28 @@
-$def with(user)
+$def with(header)
 <html>
   <head>
     <title></title>
   </head>
   <body>
-	<header>
-		<a href="#">Home</a>
-		<a href="#">Music</a>
-		<a href="#">Moive</a>
-		<a href="#">Book</a>
-		<a href="#"><b>$user</b></a>
-		<form action=
-			  $if user:
-				"/search"
-			  $else:
-				"/"} 
-		  method="post">
-		  $if user:
-			  <input type="text" name="name" placeholder="Search by name">
-				  <select name="type">
-					<option value="1">For Music</option>
-					<option value="2">For Moive</option>
-					<option value="3">For Book</option>
-				  </select>
-			  <button type="submit">Search</button>
-		  $else:
-			<input name="email" placeholder="Email" type="text">
-			<input name="passwd" placeholder="Password" type="password">
-			<button type="submit" >Login</button>
-		</form>
-    </header>
+	$:header
+
 	<form action="/signup" method="post">
+		name:
 		<input name="name" placeholder="name" type="text"><br/>
+		email:
 		<input name="email" placeholder="email" type="email"><br/>
+		gender:
 		<input name="gender" type="radio" value="1" checked="">Famale
 		<input name="gender" type="radio" value="0">Male<br/>
+		password:
 		<input name="passwd" placeholder="password" type="password"><br/>
+		password confirm:
 		<input name="passwd_confirm" placeholder="password_confirm" type="password"><br/>
+		birth:
 		<input name="birth"  type="date"><br/>
+		school:
 		<input name="school" placeholder="school" type="text"><br/>
+		major:
 		<input name="major" placeholder="major" type="text"><br/>
 		<button type="submit">Submit</button><br/>
 	</form>

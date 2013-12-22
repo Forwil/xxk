@@ -1,0 +1,14 @@
+create table user 
+(
+id int primary key auto_increment,
+name varchar(30) NOT NULL,
+email varchar(30) unique,
+passwd varchar(32),
+gender int(1),
+birth date,
+school varchar(30),
+major varchar(30),
+token varchar(32)
+);
+
+
