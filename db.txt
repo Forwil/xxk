@@ -3,7 +3,7 @@ create table user
 id int primary key auto_increment,
 name varchar(30) NOT NULL,
 email varchar(30) unique,
-passwd varchar(32),
+passwd varchar(30),
 gender int(1),
 birth date,
 school varchar(30),
@@ -11,4 +11,84 @@ major varchar(30),
 token varchar(32)
 );
 
+create table admin
+(
+id int primary key auto_increment,
+name varchar(30) not null,
+email varchar(30) unique,
+passwd varchar(30),
+token varchar(32)
+);
+
+create table moive
+(
+id int primary key auto_increment,
+name varchar(30) not null,
+director varchar(30),
+date date,
+language varchar(30),
+length int(10),
+actor varchar(30),
+abstract varchar(500),
+comments_num int(10)
+);
+
+create table music
+(
+id int primary key auto_increment,
+name varchar(30) not null,
+singer varchar(30),
+lrc varchar(30),
+rhythm varchar(30),
+comments_num int(10)
+);
+
+create table book
+(
+id int primary key auto_increment,
+name varchar(30) not null,
+author varchar(30),
+country varchar(30),
+language varchar(30),
+comments_num int(10)
+)
+
+create table group(
+id int primary key auto_increment,
+name varchar(30) not null
+);
+
+create table u_g(
+foreign key (user_id) references user(id),
+foreign key (group_id) references group(id),
+primary key (user_id,group_id)
+);
+
+create table comment(
+foreign key (user_id) references user(id),
+item_id int,
+type int,
+content varchar(500),
+time datetime,
+primary key (user_id,item_id,type)
+);
+
+create mo_b(
+foreign key (moive_id) references moive(id),
+foreign key (book_id) references book(id),
+primary key (moive_id,book_id)
+);
+
+create mo_m(
+foreign key (moive_id) references moive(id),
+foreign key (music_id) references music(id),
+primary key (moive_id,music_id)
+);
+
+create manage(
+foreign key (admin_id) references admin(id),
+item_id int,
+type int,
+primary key (item_id,type,admin_id)
+);
 

@@ -1,29 +1,39 @@
-$def with(user)
-	<header>
-		<a href="">Home</a>
-		<a href="#">Music</a>
-		<a href="#">Moive</a>
-		<a href="#">Book</a>
-		$if user:
-			<b>$user</b>
-			<a href="/?logout=1">Logout</a>
-		<form action=
-			  $if user:
-				"/search"
-			  $else:
-				"/"} 
-		  method="post">
-		  $if user:
-			  <input type="text" name="name" placeholder="Search by name">
-				  <select name="type">
-					<option value="1">For Music</option>
-					<option value="2">For Moive</option>
-					<option value="3">For Book</option>
-				  </select>
-			  <button type="submit">Search</button>
-		  $else:
-			<input name="email" placeholder="Email" type="text">
-			<input name="passwd" placeholder="Password" type="password">
-			<button type="submit" >Login</button>
-		</form>
+$def with(user,token)
+	<header  class="navbar navbar-inverse">
+		<div class="navbar-inner">
+			<div class="container">
+				<div class="nav-collapse collapse">
+					<ul class="nav pull-left">
+						<li><a href="/">Home</a></li>
+						<li><a href="#">Music</a></li>
+						<li><a href="#">Moive</a></li>
+						<li><a href="#">Book</a></li>
+							$if user:
+								<li><image src="http://www.gravatar.com/avatar/$token?s=40" ></li>
+								<li><a href="">$user</a></li>
+								<li><a href="/?logout=1">Logout</a></li>
+					</ul>
+						<form class="navbar-form pull-right" action=
+							  $if user:
+								"/search"
+							  $else:
+								"/"} 
+						  	method="post">
+						  $if user:
+							  <input type="text" class="span2 search-query" name="name" placeholder="Search by name">
+								  <select name="type" class="span2">
+									<option value="1">For Music</option>
+									<option value="2">For Moive</option>
+									<option value="3">For Book</option>
+								  </select>
+							  <button type="submit" class="btn">Search</button>
+						  $else:
+							<input name="email" class="span2" placeholder="Email" type="text">
+							<input name="passwd" class="span2" placeholder="Password" type="password">
+							<input name="admin"  type="checkbox">admin
+							<button type="submit" class="btn" >Login</button>
+						</form>
+				</div>
+			</div>
+		</div>
     </header>

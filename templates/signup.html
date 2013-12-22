@@ -1,34 +1,21 @@
-$def with(header)
-<html>
-  <head>
-    <title></title>
-  </head>
-  <body>
-	$:header
-
 	<form action="/signup" method="post">
-		name:
+		<label>name:</label>
 		<input name="name" placeholder="name" type="text"><br/>
-		email:
+		<label>email:</label>
 		<input name="email" placeholder="email" type="email"><br/>
-		gender:
+		<label>gender:</label>
 		<input name="gender" type="radio" value="1" checked="">Famale
 		<input name="gender" type="radio" value="0">Male<br/>
-		password:
+		<label>password:</label>
 		<input name="passwd" placeholder="password" type="password"><br/>
-		password confirm:
+		<label>password confirm:</label>
 		<input name="passwd_confirm" placeholder="password_confirm" type="password"><br/>
-		birth:
+		<label>birth:</label>
 		<input name="birth"  type="date"><br/>
-		school:
+		<label>school:</label>
 		<input name="school" placeholder="school" type="text"><br/>
-		major:
+		<label>major:</label>
 		<input name="major" placeholder="major" type="text"><br/>
-		<button type="submit">Submit</button><br/>
+		<button type="submit" class="btn" >Submit</button><br/>
 	</form>
-  	<hr>
-    <footer>
-          <p>&copy; Forwil&Lixue 2013</p>
-    </footer>
-  </body>
-</html>
+          
