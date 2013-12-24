@@ -4,6 +4,8 @@ import sys
 import MySQLdb
 import hashlib
 import time
+import MySQLdb.cursors
+
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -20,7 +22,15 @@ urls = (
 
 render = web.template.render('templates/')
 
-conn = MySQLdb.connect(host='localhost',user='root',passwd='19921229',db='xxk',port=3306,charset='utf8')
+conn = MySQLdb.connect(
+host='localhost',
+user='root',
+passwd='19921229',
+db='xxk',
+port=3306,
+charset='utf8',
+cursorclass = MySQLdb.cursors.DictCursor
+)
 
 def get_token(s):
 	return hashlib.md5(s).hexdigest()
@@ -73,12 +83,12 @@ def get_now_id(user):
 	if result == None:
 		return None
 	else:
-		return result[0]
+		return result['id']
 
 def get_max_id(typ):
 	sql = "select MAX(id) from %s;" %(typ)
 	res = get_one_sql(sql)
-	return res[0]
+	return res['MAX(id)']
 
 def new_moive(moive):
 	sql = "insert into moive value(null,'%s','%s','%s','%s','%s','%s','%s','%s',0);"%(moive["url"],moive["name"],moive["director"],moive["date"],moive["language"],moive["length"],moive["actor"],moive["abstract"])
@@ -146,20 +156,20 @@ def find_comments(typ,id):
 	resdis = []
 	for i in range(0,len(result)):
 		resdis.append({})
-		resdis[i]["name"] = find_by_id("user",str(result[i][0]))[1]
-		resdis[i]["content"] = result[i][3]
-		resdis[i]["date"] = result[i][4]
+		resdis[i]["name"] = find_by_id("user",result[i]["user_id"])["name"]
+		resdis[i]["content"] = result[i]["content"]
+		resdis[i]["time"] = result[i]["time"]
 		if web.cookies().get("name","") == resdis[i]["name"]:
 			resdis[i]["del"] = 1
 		else:
 			resdis[i]["del"] = 0
-		resdis[i]["id"] = result[i][5]
+		resdis[i]["id"] = result[i]["id"]
 	return resdis
 
 def drop(typ,id):
 	if typ=="comment":
 		a = find_by_id(typ,id)
-		sql = "update %s set comments_num = comments_num-1 where id=%s;"%(a[2],a[1])
+		sql = "update %s set comments_num = comments_num-1 where id=%s;"%(a["type"],a["id"])
 		run_sql(sql)
 	sql = "delete from %s where id=%s;"%(typ,id)
 	run_sql(sql)
@@ -168,33 +178,21 @@ def drop(typ,id):
 def find_admin(typ,id):
 	sql = "select * from manage where item_id=%s and type='%s';"%(id,typ)
 	result = get_one_sql(sql)
+	print result
 	if result == None:
 		return None
 	else:
-		return result[0]		
+		return result['admin_id']		
 
 def render_one(i,typ):
 	result = find_by_id(typ,i["id"])
 	comm = find_comments(typ,i["id"])
 	ad = find_admin(typ,i["id"])
-	if ad == None or "" == web.cookies().get("admin",None) or get_user_id("admin")!= ad:
-		flag = 0
-	else:
-		flag = 1
-	if typ == "music":
-		return my_page(render.music(result,render.comments(comm),flag))
-	if typ == "moive":
-		return my_page(render.moive(result,render.comments(comm),flag))
-	if typ == "book":
-		return my_page(render.book(result,render.comments(comm),flag))
+	flag = not(ad == None or "" == web.cookies().get("admin",None) or get_now_id("admin")!= ad)
+	return my_page(render.one(result,render.comments(comm),flag,typ))
 
 def render_list(typ):
-	if typ=="music":
-		return my_page(render.musics(find_by_name(typ,"")))
-	if typ=="moive":
-		return my_page(render.moives(find_by_name(typ,"")))
-	if typ=="book":
-		return my_page(render.books(find_by_name(typ,"")))
+	return my_page(render.list(typ,find_by_name(typ,"")))
 
 def new_some(i,typ):
 	if web.cookies().get("admin","")!="" or web.cookies().get("name","")=="":
@@ -213,7 +211,7 @@ class music:
 	def GET(self):
 		i = web.input()
 		if "id" in i:
-			return render_one("music")
+			return render_one(i,"music")
 		return render_list("music")
 	def POST(self):
 		i = web.input()
@@ -257,7 +255,7 @@ class new:
 			new_moive(i)
 		if i["type"] == "music":
 			new_music(i)
-		new_manage(get_user_id("admin"),i["type"],get_max_id(i["type"]))
+		new_manage(get_now_id("admin"),i["type"],get_max_id(i["type"]))
 		web.seeother("/" + i["type"])
 
 class signup:
@@ -296,12 +294,13 @@ class index:
 		i = web.input()
 		if "admin" in i:
 			tmp = find_admin_by_email(i["email"])
-			if (tmp != None and tmp[3] == i['passwd']):
-				login_admin(tmp[1],tmp[4])	
 		else:
 			tmp = find_user_by_email(i["email"])
-			if (tmp != None and tmp[3] == i['passwd']):
-				login(tmp[1],tmp[8])
+		if (tmp != None and tmp["passwd"] == i['passwd']):
+			if "admin" in i:
+				login_admin(tmp["name"],tmp["token"])
+			else:	
+				login(tmp["name"],tmp["token"])
 		web.seeother("/")
 
 if __name__ == "__main__":

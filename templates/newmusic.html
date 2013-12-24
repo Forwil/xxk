@@ -1,14 +1,40 @@
-	<form accept-charset="UTF-8" action="/new?type=music" method="post">
-		<label>cover</label>
-		<input name="url"  placeholder="url" type="url"><br/>
-		<label>name:</label>
-		<input name="name" placeholder="name" type="text"><br/>
-		<label>singer:</label>
-		<input name="singer" placeholder="singer" type="text"><br/>
-		<label>lrc:</label>
-		<input name="lrc" placeholder="lrc_author" type="text"><br/>
-		<label>rhythm:</label>
-		<input name="rhythm" placeholder="rhythm_author" type="text"><br/>
-		<button type="submit" class="btn" >Create</button><br/>
+<div class="span8">	
+	<form class="form-horizontal" accept-charset="UTF-8" action="/new?type=music" method="post">
+		<fieldset>	
+			<div class="control-group">
+				<label class="control-label" for="url">Cover</label>
+				<div class="controls">
+					<input id="url" name="url"  placeholder="url" type="url">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="name">Name</label>
+				<div class="controls">
+					<input id="name" name="name" placeholder="name" type="text">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="singer">Singer</label>
+				<div class="controls">
+					<input id="singer" name="singer" placeholder="singer" type="text">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="lrc">Lrc</label>
+				<div class="controls">
+					<input id="lrc" name="lrc" placeholder="lrc_author" type="text">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="rhythm">Rhythm</label>
+				<div class="controls">
+					<input id="rhythm" name="rhythm" placeholder="rhythm_author" type="text">
+				</div>
+			</div>
+			<div class="form-actions">
+				<button type="submit" class="btn btn-primary" >Create</button>
+			</div>
+		</fieldset>
 	</form>
-          
+</div>          
