@@ -104,7 +104,6 @@ def new_moive(moive):
 def edit_moive(moive):
 	sql = "update moive set url='%s',name='%s',director='%s',date='%s',language='%s',length='%s',actor='%s',abstract='%s' where id='%s';"%(moive["url"],moive["name"],moive["director"],moive["date"],moive["language"],moive["length"],moive["actor"],moive["abstract"],moive['id'])
 	run_sql(sql)
-	print "shabi"
 	return
 
 def new_music(music):
@@ -195,7 +194,6 @@ def drop(typ,id):
 def find_admin(typ,id):
 	sql = "select * from manage where item_id=%s and type='%s';"%(id,typ)
 	result = get_one_sql(sql)
-	print result
 	if result == None:
 		return None
 	else:
@@ -205,7 +203,7 @@ def render_one(i,typ):
 	result = find_by_id(typ,i["id"])
 	comm = find_comments(typ,i["id"])
 	ad = find_admin(typ,i["id"])
-	flag = not(ad == None or "" == web.cookies().get("admin",None) or get_now_id("admin")!= ad)
+	flag = not(None == web.cookies().get("admin",None) or get_now_id("admin")!= ad)
 	return my_page(render.one(result,render.comments(comm),flag,typ))
 
 def render_list(typ):

@@ -9,11 +9,15 @@ $def with(one,comments,fd,type)
 		<ul>
 				<span><a href="/$type?id=$one['id']"><h4>$one['name']</h4></a></span>
 			$for i in one:
-				$if i!='id' and i!='url' and i!='name' and i!='comments_num':	
+				$if i!='abstract'and i!='id' and i!='url' and i!='name' and i!='comments_num':	
 					<li>
 						<span style="color:gray;">$i:</span>
 						<span>$one[i]</span>
 					</li>
+			<li>
+				<span style="color:gray;">abstract:</span>
+				<span>$one['abstract']</span>
+			</li>
 		</ul>
 			<p>
 				<span style="color:gray;">comments</span>

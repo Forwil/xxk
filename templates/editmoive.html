@@ -15,7 +15,7 @@ $def with(moive)
 			<div class="control-group">
 				<label class="control-label" for="url">Cover</label>
 				<div class="controls">
-					<input id="url" name="url"  placeholder="url" type="url">
+					<input id="url" name="url" value="$moive['url']" placeholder="url" type="url">
 					<a class="btn" onclick="get_image()">Get</a>
 				</div>
 			</div>
@@ -62,7 +62,7 @@ $def with(moive)
 			<div class="control-group">
 				<label class="control-label" for="abstract">Abstract</label>
 				<div class="controls">
-					<textarea id="abstract" name="abstract" value="$moive['abstract']" placeholder="abstract" type="text"></textarea>
+					<textarea id="abstract" name="abstract" placeholder="abstract" type="text">$moive['abstract']</textarea>
 				</div>
 			</div>
 
