@@ -1,8 +1,9 @@
 $def with(one,comments,fd,type)
 	<div>
-	<hr/>
-		<div style="float: left; border:1px dotted;">
-			<img width="120px" height="120px"src="$one['url']">
+		<div style="float: left;">
+			<a class="thumbnail">
+				<img width="120px" height="120px"src="$one['url']">
+			</a>
 		</div>
 			<div style="margin-left:150px;">
 		<ul>
@@ -10,12 +11,12 @@ $def with(one,comments,fd,type)
 			$for i in one:
 				$if i!='id' and i!='url' and i!='name' and i!='comments_num':	
 					<li>
-						<span>$i:</span>
+						<span style="color:gray;">$i:</span>
 						<span>$one[i]</span>
 					</li>
 		</ul>
 			<p>
-				<span>comments</span>
+				<span style="color:gray;">comments</span>
 				<span><b>$one['comments_num']</b></span>
 			</p>
 			<p>

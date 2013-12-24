@@ -1,10 +1,21 @@
-<div class="span8">	
+<div>
+<div class="hero-unit">	
 	<form class="form-horizontal" accept-charset="UTF-8" action="/new?type=moive" method="post">
 		<fieldset>	
+			<div class="control-group">
+				<label class="control-label" for="image">Image</label>
+				<div class="controls" style="width:120px;height:120px;">
+					<a class="thumbnail">
+					<img id="image" src="http://www.gravatar.com/avatar/26b3b6dd1a33cdccf5eff8bb6a0d7204?s=120"></img>
+					</a>
+				</div>  
+			</div>
+
 			<div class="control-group">
 				<label class="control-label" for="url">Cover</label>
 				<div class="controls">
 					<input id="url" name="url"  placeholder="url" type="url">
+					<a class="btn" onclick="get_image()">Get</a>
 				</div>
 			</div>
 
@@ -60,4 +71,4 @@
 		</fieldset>
 	</form>
 </div>          
-
+</div>

@@ -1,31 +1,31 @@
 $def with(typ,list)
 $for i in list:
 	<div class="well">
-	<div style="float: left;">
-		<a class="thumbnail" >
-			<div style="width:120px; height:120px;">
-				<img  src="$i['url']">
-			</div>
-		</a>
-	</div>
-	<div style="margin-left: 150px;">
-		<p>
-			<span><a href="/$typ?id=$i['id']"><h4>$i['name']</h4></a></span>
-		</p>
-		$for j in i:
-			$if j!='date' and j!='abstract'and j!='length' and j!='id' and j!='url' and j!='name' and j!= 'comments_num':
-				<p>
-					<span style="color:gray;">$j:</span>
-					<span>$i[j]</span>
-				</p>
-		$if typ=="moive":
+		<div style="float: left;">
+			<a class="thumbnail" >
+				<div style="width:120px; height:120px;">
+					<img  src="$i['url']">
+				</div>
+			</a>
+		</div>
+		<div style="margin-left: 150px;">
 			<p>
-				<span style="color:gray;">Abstract:</span>
-				<span>$i['abstract']</span>
+				<span><a href="/$typ?id=$i['id']"><h4>$i['name']</h4></a></span>
 			</p>
-		<p class="pull-right">
-			Comments:<b>$i["comments_num"]</b>
-		</p>
-	</div>
+			$for j in i:
+				$if j!='date' and j!='abstract'and j!='length' and j!='id' and j!='url' and j!='name' and j!= 'comments_num':
+					<p>
+						<span style="color:gray;">$j:</span>
+						<span>$i[j]</span>
+					</p>
+			$if typ=="moive":
+				<p>
+					<span style="color:gray;">Abstract:</span>
+					<span>$i['abstract']</span>
+				</p>
+			<p class="pull-right">
+				<span style="color:gray;">Comments:</span><b>$i["comments_num"]</b>
+			</p>
+		</div>
 	</div>
 
