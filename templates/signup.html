@@ -1,21 +1,59 @@
-	<form action="/signup" method="post">
-		<label>name:</label>
-		<input name="name" placeholder="name" type="text"><br/>
-		<label>email:</label>
-		<input name="email" placeholder="email" type="email"><br/>
-		<label>gender:</label>
-		<input name="gender" type="radio" value="1" checked="">Famale
-		<input name="gender" type="radio" value="0">Male<br/>
-		<label>password:</label>
-		<input name="passwd" placeholder="password" type="password"><br/>
-		<label>password confirm:</label>
-		<input name="passwd_confirm" placeholder="password_confirm" type="password"><br/>
-		<label>birth:</label>
-		<input name="birth"  type="date"><br/>
-		<label>school:</label>
-		<input name="school" placeholder="school" type="text"><br/>
-		<label>major:</label>
-		<input name="major" placeholder="major" type="text"><br/>
-		<button type="submit" class="btn" >Submit</button><br/>
+<div class="hero-unit">	
+	<form class="form-horizontal" accept-charset="UTF-8" action="/signup" method="post">
+		<fieldset>	
+			<div class="control-group">
+				<label class="control-label" for="name">Name</label>
+				<div class="controls">
+					<input id="name" name="name" placeholder="name" type="text">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="email">Email</label>
+				<div class="controls">
+					<input id="email" name="email" placeholder="email" type="email">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="gender">Gender</label>
+				<div class="controls">
+					<input name="gender" type="radio" value="1" checked="">♂
+					<input name="gender" type="radio" value="0">♀
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="passwd">Password</label>
+				<div class="controls">
+					<input id="passwd" name="passwd" placeholder="password" type="password">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="passwd_confirm">Password confirm</label>
+				<div class="controls">
+					<input id="passwd_confirm" name="passwd_confirm" placeholder="password confirm" type="password">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="bitrh">Birth</label>
+				<div class="controls">
+					<input id="birth" name="birth" type="date">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="school">School</label>
+				<div class="controls">
+					<input id="school" name="school" placeholder="school" type="text">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="bitrh">Major</label>
+				<div class="controls">
+					<input id="major" name="major" placeholder="major"type="text">
+				</div>
+			</div>
+
+			<div class="form-actions">
+				<button type="submit" class="btn btn-primary" >Create</button>
+			</div>
+		</fieldset>
 	</form>
-          
+</div>                 
