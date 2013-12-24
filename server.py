@@ -18,7 +18,8 @@ urls = (
 	'/moive','moive',
 	'/book','book',
 	'/delete','delete',
-	'/edit','edit'
+	'/edit','edit',
+	'/user','user'
 )
 
 render = web.template.render('templates/')
@@ -66,6 +67,12 @@ def new_user(user):
 	sql = "insert into user value(null,'%s','%s','%s','%s','%s','%s','%s','%s');"%(user['name'],user['email'],user['passwd'],user['gender'],user['birth'],user['school'],user['major'],token)
 	run_sql(sql)
 	return user['name'],token
+
+def edit_user(user):
+	sql = "update user set name='%s',email='%s',passwd='%s',gender='%s',birth='%s',school='%s',major='%s' where id=%s;"%(user['name'],user['email'],user['passwd'],user['gender'],user['birth'],user['school'],user['major'],user['id'])
+	run_sql(sql)
+	return 
+
 
 def new_manage(admin_id,typ,item_id):
 	sql = "insert into manage value('%s','%s','%s');" % (admin_id,item_id,typ)
@@ -179,7 +186,7 @@ def find_comments(typ,id):
 			resdis[i]["del"] = 1
 		else:
 			resdis[i]["del"] = 0
-		resdis[i]["id"] = result[i]["id"]
+		resdis[i]["id"] = result[i]["user_id"]
 	return resdis
 
 def drop(typ,id):
@@ -263,6 +270,8 @@ class edit:
 			return my_page(render.editmoive(one))
 		elif t == "music":
 			return my_page(render.editmusic(one))
+		elif t == "user":
+			return my_page(render.edituser(one))
 	def POST(self):
 		i = web.input()
 		if i["type"] == "book":
@@ -271,6 +280,8 @@ class edit:
 			edit_moive(i)
 		if i["type"] == "music":
 			edit_music(i)
+		if i["type"] == "user":
+			edit_user(i)	
 		web.seeother("/%s"% (i["type"]))
 
 class new:
@@ -305,6 +316,24 @@ class signup:
 		else:
 			login(*new_user(i))
 			web.seeother("/")
+
+class user:
+	def GET(self):
+		i = web.input()
+		if i.get("id","")=="":
+			return my_page(render.users(find_by_name("user","")))
+		else:
+			if web.cookies().get("admin","")=="":
+				if i['id'] == str(get_now_id("user")):
+					flag = True
+				else:
+					flag = False
+			else:
+				flag = False
+			return my_page(render.user(find_by_id("user",i['id']),flag))
+
+	def POST(self):
+		return 
 
 class search:
 	def POST(self):

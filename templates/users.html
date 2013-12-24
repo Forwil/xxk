@@ -1,0 +1,17 @@
+$def with(users)
+<div class="hero-unit">
+	<div class="container">
+	$for user in users:
+		<div>
+			<a class="pull-left thumbnail" href="user?id=$user['id']">
+				<div>
+					<img src="http://www.gravatar.com/avatar/$user['token']?s=120"></img>
+				</div>
+				<div>
+					<span style="color:gray;">Name:</span>
+					<span>$user["name"]</span>
+				</div>
+			</a>
+		</div>
+	</div>
+</div>

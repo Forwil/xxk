@@ -4,7 +4,7 @@ $if comments != []:
 	$for i in comments:
 		<div>
 			<div>
-				<b>$i["name"]:</b>
+				<a href="user?id=$i['id']"><b>$i["name"]</b></a>:
 				<span style="float:right;color:gray;">$i["time"]
 				$if i.get("del",""):
 					<a  href="/delete?type=comment&id=$i["id"]" >delete</a>

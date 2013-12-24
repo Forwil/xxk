@@ -1,0 +1,60 @@
+$def with(user)
+<div class="hero-unit">	
+	<form class="form-horizontal" accept-charset="UTF-8" action="/edit?type=user&id=$user['id']" method="post">
+		<fieldset>	
+			<div class="control-group">
+				<label class="control-label" for="name">Name</label>
+				<div class="controls">
+					<input id="name" name="name" value="$user['name']" placeholder="name" type="text">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="email">Email</label>
+				<div class="controls">
+					<input id="email" name="email" value="$user['email']" placeholder="email" type="email">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="gender">Gender</label>
+				<div class="controls">
+					<input name="gender" type="radio" value="1" checked="">♂
+					<input name="gender" type="radio" value="0">♀
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="passwd">Password</label>
+				<div class="controls">
+					<input id="passwd" name="passwd" placeholder="password" type="password">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="passwd_confirm">Password confirm</label>
+				<div class="controls">
+					<input id="passwd_confirm" name="passwd_confirm" placeholder="password confirm" type="password">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label"for="bitrh">Birth</label>
+				<div class="controls">
+					<input id="birth"  value="$user['birth']" name="birth" type="date">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="school">School</label>
+				<div class="controls">
+					<input id="school" value="$user['school']" name="school" placeholder="school" type="text">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="bitrh">Major</label>
+				<div class="controls">
+					<input id="major"  value="$user['major']" name="major" placeholder="major"type="text">
+				</div>
+			</div>
+
+			<div class="form-actions">
+				<button type="submit" class="btn btn-primary" >Create</button>
+			</div>
+		</fieldset>
+	</form>
+</div>                 
