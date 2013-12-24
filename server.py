@@ -4,7 +4,6 @@ import sys
 import MySQLdb
 import hashlib
 import time
-
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -26,105 +25,77 @@ conn = MySQLdb.connect(host='localhost',user='root',passwd='19921229',db='xxk',p
 def get_token(s):
 	return hashlib.md5(s).hexdigest()
 
-def is_exist_user(email):
-	return False
-
-def new_user(user):
-	token = get_token(user["email"])
-	sql = "insert into user value(null,'%s','%s','%s','%s','%s','%s','%s','%s');"%(user['name'],user['email'],user['passwd'],user['gender'],user['birth'],user['school'],user['major'],token)
+def run_sql(sql):
 	print sql
 	cur = conn.cursor()	
 	cur.execute(sql)
 	conn.commit()
 	cur.close()
+
+def get_one_sql(sql):
+	print sql
+	cur = conn.cursor()	
+	cur.execute(sql)
+	result =cur.fetchone()
+	conn.commit()
+	cur.close()
+	return result
+
+def get_all_sql(sql):	
+	print sql
+	cur = conn.cursor()	
+	cur.execute(sql)
+	result =cur.fetchall()
+	conn.commit()
+	cur.close()
+	return result
+
+def new_user(user):
+	token = get_token(user["email"])
+	sql = "insert into user value(null,'%s','%s','%s','%s','%s','%s','%s','%s');"%(user['name'],user['email'],user['passwd'],user['gender'],user['birth'],user['school'],user['major'],token)
+	run_sql(sql)
 	return user['name'],token
 
 def new_manage(admin_id,typ,item_id):
 	sql = "insert into manage value('%s','%s','%s');" % (admin_id,item_id,typ)
-	print sql		
-	cur = conn.cursor()	
-	cur.execute(sql)
-	conn.commit()
-	cur.close()
+	run_sql(sql)
 	return 
 
 def new_book(book):
 	sql = "insert into book value(null,'%s','%s','%s','%s','%s',0);"%(book["url"],book["name"],book["author"],book["country"],book["language"])
-	print sql		
-	cur = conn.cursor()	
-	cur.execute(sql)
-	conn.commit()
-	cur.close()
+	run_sql(sql)
 	return 
 
-def get_now_id():
+def get_now_id(user):
 	token = web.cookies().get("token","") 
-	sql = "select * from user where token='%s';" %(token)
-	print sql		
-	cur = conn.cursor()	
-	cur.execute(sql)
-	result =cur.fetchone()
-	conn.commit()
-	cur.close()
+	sql = "select * from %s where token='%s';" %(user,token)
+	result = get_one_sql(sql)
 	if result == None:
 		return None
 	else:
 		return result[0]
 
-def get_admin_id():
-	token = web.cookies().get("token","") 
-	sql = "select * from admin where token='%s';" %(token)
-	print sql		
-	cur = conn.cursor()	
-	cur.execute(sql)
-	result =cur.fetchone()
-	conn.commit()
-	cur.close()
-	if result == None:
-		return None
-	else:
-		return result[0]
-
-def get_count(typ):
+def get_max_id(typ):
 	sql = "select MAX(id) from %s;" %(typ)
-	cur = conn.cursor()
-	cur.execute(sql)
-	res = cur.fetchone()
-	conn.commit()
-	cur.close()
+	res = get_one_sql(sql)
 	return res[0]
 
 def new_moive(moive):
 	sql = "insert into moive value(null,'%s','%s','%s','%s','%s','%s','%s','%s',0);"%(moive["url"],moive["name"],moive["director"],moive["date"],moive["language"],moive["length"],moive["actor"],moive["abstract"])
-	print sql		
-	cur = conn.cursor()	
-	cur.execute(sql)
-	conn.commit()
-	cur.close()
+	run_sql(sql)
 	return 
 
 def new_music(music):
 	sql = "insert into music value(null,'%s','%s','%s','%s','%s',0);"%(music["url"],music["name"],music["singer"],music["lrc"],music["rhythm"])
-	print sql		
-	cur = conn.cursor()	
-	cur.execute(sql)
-	conn.commit()
-	cur.close()
+	run_sql(sql)
 	return 
 
 def new_comment(user_id,item_id,typ,content):
 	t = time.strftime("%Y-%m-%d %H:%M:%S")
 	sql = "insert into comment value('%s','%s','%s','%s','%s',null);" % (user_id,item_id,typ,content,t)
-	print sql		
-	cur = conn.cursor()	
-	cur.execute(sql)
-	conn.commit()
-	cur.close()
-	sql = "update %s set comments_num = comments_num +1 where id=%s;" %(typ,item_id)
-	cur = conn.cursor()	
-	cur.execute(sql)
-	conn.commit()
-	cur.close()
+	run_sql(sql)
+	sql = "update %s set comments_num = comments_num + 1 where id=%s;" %(typ,item_id)
+	run_sql(sql)
 	return 
 
 def login(name,token):
@@ -143,22 +114,14 @@ def logout():
 	web.setcookie('admin',"",-1)	
 	return
 
-def find_user(email):
+def find_user_by_email(email):
 	sql = "select * from user where email='%s';" %(email)
-	cur = conn.cursor()
-	cur.execute(sql)
-	conn.commit()
-	result =cur.fetchone()
-	cur.close()
+	result = get_one_sql(sql)
 	return result
 
 def find_admin_by_email(email):
 	sql = "select * from admin where email='%s';" %(email)
-	cur = conn.cursor()
-	cur.execute(sql)
-	conn.commit()
-	result =cur.fetchone()
-	cur.close()
+	result =get_one_sql(sql)
 	return result
 
 def my_page(body):
@@ -171,51 +134,15 @@ def find_by_name(typ,name):
 		sql = "select * from %s;"%(typ)
 	else:
 		sql = "select * from %s where name='%s';" %(typ,name)
-	print sql
-	cur = conn.cursor()
-	cur.execute(sql)
-	result = []
-	while True:
-		t = cur.fetchone()
-		if t!=None:
-			result.append(t)
-		else:
-			break
-	conn.commit()
-	cur.close()
-	return result
+	return get_all_sql(sql)
 
 def find_by_id(typ,id):
 	sql = "select * from %s where id=%s;"%(typ,id)
-	print sql
-	cur = conn.cursor()
-	cur.execute(sql)
-	result = cur.fetchone()
-	conn.commit()
-	cur.close()
-	return result
-
-def find_music(name):
-	return find_by_name("music",name)
-
-def find_moive(name):
-	return find_by_name("moive",name)
-
-def find_book(name):
-	return find_by_name("book",name)
+	return get_one_sql(sql)
 
 def find_comments(typ,id):
 	sql = "select * from comment where type='%s' and item_id=%s order by time;" % (typ,id)	
-	print sql
-	cur = conn.cursor()
-	cur.execute(sql)
-	result = []
-	while True:
-		t = cur.fetchone()
-		if t!=None:
-			result.append(t)
-		else:
-			break
+	result = get_all_sql(sql)
 	resdis = []
 	for i in range(0,len(result)):
 		resdis.append({})
@@ -227,38 +154,54 @@ def find_comments(typ,id):
 		else:
 			resdis[i]["del"] = 0
 		resdis[i]["id"] = result[i][5]
-	print resdis
-	conn.commit()
-	cur.close()
 	return resdis
 
 def drop(typ,id):
 	if typ=="comment":
 		a = find_by_id(typ,id)
 		sql = "update %s set comments_num = comments_num-1 where id=%s;"%(a[2],a[1])
-		print sql
-		cur = conn.cursor()
-		cur.execute(sql)
+		run_sql(sql)
 	sql = "delete from %s where id=%s;"%(typ,id)
-	print sql
-	cur = conn.cursor()
-	cur.execute(sql)
-	conn.commit()
-	cur.close()
+	run_sql(sql)
 	return
 
 def find_admin(typ,id):
 	sql = "select * from manage where item_id=%s and type='%s';"%(id,typ)
-	print sql
-	cur = conn.cursor()
-	cur.execute(sql)
-	result = cur.fetchone()
-	conn.commit()
-	cur.close()
+	result = get_one_sql(sql)
 	if result == None:
 		return None
 	else:
 		return result[0]		
+
+def render_one(i,typ):
+	result = find_by_id(typ,i["id"])
+	comm = find_comments(typ,i["id"])
+	ad = find_admin(typ,i["id"])
+	if ad == None or "" == web.cookies().get("admin",None) or get_user_id("admin")!= ad:
+		flag = 0
+	else:
+		flag = 1
+	if typ == "music":
+		return my_page(render.music(result,render.comments(comm),flag))
+	if typ == "moive":
+		return my_page(render.moive(result,render.comments(comm),flag))
+	if typ == "book":
+		return my_page(render.book(result,render.comments(comm),flag))
+
+def render_list(typ):
+	if typ=="music":
+		return my_page(render.musics(find_by_name(typ,"")))
+	if typ=="moive":
+		return my_page(render.moives(find_by_name(typ,"")))
+	if typ=="book":
+		return my_page(render.books(find_by_name(typ,"")))
+
+def new_some(i,typ):
+	if web.cookies().get("admin","")!="" or web.cookies().get("name","")=="":
+		web.seeother("/%s?id=%s" % (typ,i["id"]))
+		return 
+	new_comment(get_now_id("user"),i["id"],typ,i["content"])
+	web.seeother("/%s?id=%s" % (typ,i["id"]))
 
 class delete:
 	def GET(self):
@@ -270,97 +213,52 @@ class music:
 	def GET(self):
 		i = web.input()
 		if "id" in i:
-			result = find_by_id("music",i["id"])
-			comm = find_comments("music",i["id"])
-			ad = find_admin("music",i["id"])
-			print ad
-			if ad == None or "" == web.cookies().get("admin",None) or get_admin_id()!= ad:
-				flag = 0
-			else:
-				flag = 1
-			return my_page(render.music(result,render.comments(comm),flag))
-		return my_page(render.musics(find_music("")))
+			return render_one("music")
+		return render_list("music")
 	def POST(self):
 		i = web.input()
-		if web.cookies().get("admin","")!="" or web.cookies().get("name","")=="":
-			web.seeother("/music?id=%s" % (i["id"]))
-			return 
-		nowid = get_now_id()
-		new_comment(nowid,i["id"],"music",i["content"])
-		web.seeother("/music?id=%s" % (i["id"]))
+		new_some(i,"music")
 
 class moive:
 	def GET(self):
 		i = web.input()
 		if "id" in i:
-			result = find_by_id("moive",i["id"])
-			comm = find_comments("moive",i["id"])
-			ad = find_admin("moive",i["id"])
-			if ad == None or "" == web.cookies().get("admin",None) or get_admin_id()!= ad:
-				flag = 0
-			else:
-				flag = 1
-			return my_page(render.moive(result,render.comments(comm),flag))
-		return my_page(render.moives(find_moive("")))
-
+			return render_one(i,"moive")
+		return render_list("moive")
 	def POST(self):
 		i = web.input()
-		if web.cookies().get("admin","")!="" or web.cookies().get("name","")=="":
-			web.seeother("/moive?id=%s" % (i["id"]))
-			return 
-		nowid = get_now_id()
-		new_comment(nowid,i["id"],"moive",i["content"])
-		web.seeother("/moive?id=%s" % (i["id"]))
+		new_some(i,"moive")
 
 class book:
 	def GET(self):
 		i = web.input()
 		if "id" in i:
-			result = find_by_id("book",i["id"])
-			comm = find_comments("book",i["id"])
-			ad = find_admin("book",i["id"])
-			if ad == None or "" == web.cookies().get("admin",None) or get_admin_id()!= ad:
-				flag = 0
-			else:
-				flag = 1
-			return my_page(render.book(result,render.comments(comm),flag))
-		return my_page(render.books(find_book("")))
+			return render_one(i,"book")
+		return render_list("book")
 	def POST(self):
 		i = web.input()
-		if web.cookies().get("admin","")!="" or web.cookies().get("name","")=="":
-			web.seeother("/book?id=%s" % (i["id"]))
-			return 
-		nowid = get_now_id()
-		new_comment(nowid,i["id"],"book",i["content"])
-		web.seeother("/book?id=%s" % (i["id"]))
+		new_some(i,"book")
 
 class new:
 	def GET(self):
 		i = web.input()
 		t = i.get("type","")
-		if t == "3":
+		if t == "book":
 			return my_page(render.newbook())
-		elif t == "2":
+		elif t == "moive":
 			return my_page(render.newmoive())
-		else:
+		elif t == "music":
 			return my_page(render.newmusic())
 	def POST(self):
 		i = web.input()
-		if i["type"] == "3":
+		if i["type"] == "book":
 			new_book(i)
-			c = get_count("book")
-			new_manage(get_admin_id(),"book",c)
-			web.seeother("/book")
-		elif i["type"] == "2":
+		if i["type"] == "moive":
 			new_moive(i)
-			c = get_count("moive")
-			new_manage(get_admin_id(),"moive",c)
-			web.seeother("/moive")
-		else:
+		if i["type"] == "music":
 			new_music(i)
-			c = get_count("music")
-			new_manage(get_admin_id(),"music",c)
-			web.seeother("/music")
+		new_manage(get_user_id("admin"),i["type"],get_max_id(i["type"]))
+		web.seeother("/" + i["type"])
 
 class signup:
 	def GET(self):
@@ -368,7 +266,7 @@ class signup:
 
 	def POST(self):
 		i = web.input()
-		if find_user(i["email"]) != None:
+		if find_user_by_email(i["email"]) != None:
 			web.seeother("/signup")
 		else:
 			login(*new_user(i))
@@ -377,12 +275,12 @@ class signup:
 class search:
 	def POST(self):
 		i = web.input()
-		if i['type'] == "3":
-			return my_page(render.books(find_book(i["name"])))
-		elif i['type'] == "2":
-			return my_page(render.moives(find_moive(i["name"])))
-		else:
-			return my_page(render.musics(find_music(i["name"])))
+		if i['type'] == "book":
+			return my_page(render.books(find_by_name("book",i["name"])))
+		elif i['type'] == "moive":
+			return my_page(render.moives(find_by_name("moive",i["name"])))
+		elif i['type'] == "music":
+			return my_page(render.musics(find_by_name("music",i["name"])))
 
 class index:
 	def GET(self):
@@ -393,6 +291,7 @@ class index:
 		if web.cookies().get("admin","") != "":
 			return my_page(render.admin())
 		return my_page(render.index())
+
 	def POST(self):
 		i = web.input()
 		if "admin" in i:
@@ -400,7 +299,7 @@ class index:
 			if (tmp != None and tmp[3] == i['passwd']):
 				login_admin(tmp[1],tmp[4])	
 		else:
-			tmp = find_user(i["email"])
+			tmp = find_user_by_email(i["email"])
 			if (tmp != None and tmp[3] == i['passwd']):
 				login(tmp[1],tmp[8])
 		web.seeother("/")
