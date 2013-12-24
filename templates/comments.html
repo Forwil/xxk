@@ -7,7 +7,7 @@ $if comments != []:
 				<b>$i["name"]:</b>
 				<span style="float:right;color:gray;">$i["time"]
 				$if i.get("del",""):
-					<a href="/delete?type=comment&id=$i["id"]" >delete</a>
+					<a class="btn" href="/delete?type=comment&id=$i["id"]" >delete</a>
 				</span>
 			</div>
 			<div class="well" style="margin-left:10%;">

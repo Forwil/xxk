@@ -1,0 +1,75 @@
+$def with(moive)
+<div>
+<div class="hero-unit">	
+	<form class="form-horizontal" accept-charset="UTF-8" action="/edit?type=moive&id=$moive['id']" method="post">
+		<fieldset>	
+			<div class="control-group">
+				<label class="control-label" for="image">Image</label>
+				<div class="controls" style="width:120px;height:120px;">
+					<a class="thumbnail">
+					<img id="image" src="$moive['url']"></img>
+					</a>
+				</div>  
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="url">Cover</label>
+				<div class="controls">
+					<input id="url" name="url"  placeholder="url" type="url">
+					<a class="btn" onclick="get_image()">Get</a>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="name">Name</label>
+				<div class="controls">
+					<input id="name" name="name" value="$moive['name']" placeholder="name" type="text">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="director">Director</label>
+				<div class="controls">
+					<input id="director" name="director" value="$moive['director']" placeholder="director" type="text">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="date">Date</label>
+				<div class="controls">
+					<input id="date" name="date" value="$moive['date']" placeholder="date" type="date">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="language">Language</label>
+				<div class="controls">
+					<input id="language" name="language" value="$moive['language']" placeholder="language" type="text">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="length">Length</label>
+				<div class="controls">
+					<input id="length" name="length" value="$moive['length']" placeholder="length" type="text">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="actor">Actor</label>
+				<div class="controls">
+					<input id="actor" name="actor" value="$moive['actor']" placeholder="actor" type="text">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="abstract">Abstract</label>
+				<div class="controls">
+					<textarea id="abstract" name="abstract" value="$moive['abstract']" placeholder="abstract" type="text"></textarea>
+				</div>
+			</div>
+
+			<div class="form-actions">
+				<button type="submit" class="btn btn-primary" >Create</button>
+			</div>
+		</fieldset>
+	</form>
+</div>          
+</div>

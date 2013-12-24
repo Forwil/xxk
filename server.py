@@ -17,7 +17,8 @@ urls = (
 	'/music','music',
 	'/moive','moive',
 	'/book','book',
-	'/delete','delete'
+	'/delete','delete',
+	'/edit','edit'
 )
 
 render = web.template.render('templates/')
@@ -71,11 +72,6 @@ def new_manage(admin_id,typ,item_id):
 	run_sql(sql)
 	return 
 
-def new_book(book):
-	sql = "insert into book value(null,'%s','%s','%s','%s','%s',0);"%(book["url"],book["name"],book["author"],book["country"],book["language"])
-	run_sql(sql)
-	return 
-
 def get_now_id(user):
 	token = web.cookies().get("token","") 
 	sql = "select * from %s where token='%s';" %(user,token)
@@ -90,13 +86,34 @@ def get_max_id(typ):
 	res = get_one_sql(sql)
 	return res['MAX(id)']
 
+def new_book(book):
+	sql = "insert into book value(null,'%s','%s','%s','%s','%s',0);"%(book["url"],book["name"],book["author"],book["country"],book["language"])
+	run_sql(sql)
+	return 
+
+def edit_book(book):
+	sql = "update book set url='%s',name='%s',author='%s',country='%s',language='%s' where id='%s';"%(book["url"],book["name"],book["author"],book["country"],book["language"],book['id'])
+	run_sql(sql)
+	return 
+
 def new_moive(moive):
 	sql = "insert into moive value(null,'%s','%s','%s','%s','%s','%s','%s','%s',0);"%(moive["url"],moive["name"],moive["director"],moive["date"],moive["language"],moive["length"],moive["actor"],moive["abstract"])
 	run_sql(sql)
 	return 
 
+def edit_moive(moive):
+	sql = "update moive set url='%s',name='%s',director='%s',date='%s',language='%s',length='%s',actor='%s',abstract='%s' where id='%s';"%(moive["url"],moive["name"],moive["director"],moive["date"],moive["language"],moive["length"],moive["actor"],moive["abstract"],moive['id'])
+	run_sql(sql)
+	print "shabi"
+	return
+
 def new_music(music):
 	sql = "insert into music value(null,'%s','%s','%s','%s','%s',0);"%(music["url"],music["name"],music["singer"],music["lrc"],music["rhythm"])
+	run_sql(sql)
+	return 
+
+def edit_music(music):
+	sql = "update music set url='%s',name='%s',singer='%s',lrc='%s',rhythm='%s' where id='%s';"%(music["url"],music["name"],music["singer"],music["lrc"],music["rhythm"],music['id'])
 	run_sql(sql)
 	return 
 
@@ -236,6 +253,27 @@ class book:
 	def POST(self):
 		i = web.input()
 		new_some(i,"book")
+
+class edit:
+	def GET(self):
+		i = web.input()
+		t = i.get("type","")
+		one = find_by_id(t,i['id'])
+		if t == "book":
+			return my_page(render.editbook(one))
+		elif t == "moive":
+			return my_page(render.editmoive(one))
+		elif t == "music":
+			return my_page(render.editmusic(one))
+	def POST(self):
+		i = web.input()
+		if i["type"] == "book":
+			edit_book(i)
+		if i["type"] == "moive":
+			edit_moive(i)
+		if i["type"] == "music":
+			edit_music(i)
+		web.seeother("/%s"% (i["type"]))
 
 class new:
 	def GET(self):

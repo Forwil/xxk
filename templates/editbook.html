@@ -1,0 +1,51 @@
+$def with(book)
+ <div class="hero-unit">	
+	<form class="form-horizontal" accept-charset="UTF-8" action="/edit?type=book&id=$book['id']" method="post">
+		<fieldset>	
+			<div class="control-group">
+				<label class="control-label" for="image">Image</label>
+				<div class="controls" style="width:120px;height:120px;">
+					<a class="thumbnail">
+					<img id="image" src="$book['url']"></img>
+					</a>
+				</div>  
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="url">Cover</label>
+				<div class="controls">
+					<input id="url" name="url" value="$book['url']" placeholder="url" type="url">
+					<a class="btn" onclick="get_image()">Get</a>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="name">Name</label>
+				<div class="controls">
+					<input id="name" name="name" value="$book['name']" placeholder="name" type="text">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="author">Author</label>
+				<div class="controls">
+					<input id="author" name="author" value="$book['author']" placeholder="author" type="text">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="country">Country</label>
+				<div class="controls">
+					<input id="country" name="country" value="$book['country']" placeholder="country" type="text">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="language">Language</label>
+				<div class="controls">
+					<input id="language" name="language" value="$book['language']" placeholder="language" type="text">
+				</div>
+			</div>
+			<div class="form-actions">
+				<button type="submit" class="btn btn-primary" >Create</button>
+			</div>
+		</fieldset>
+	</form>
+</div>               

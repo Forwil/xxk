@@ -1,0 +1,52 @@
+$def with(music)
+<div class="hero-unit">	
+	<form class="form-horizontal" accept-charset="UTF-8" action="/edit?type=music&id=$music['id']" method="post">
+		<fieldset>
+			<div class="control-group">
+				<label class="control-label" for="image">Image</label>
+				<div class="controls" style="width:120px;height:120px;">
+					<a class="thumbnail">
+					<img id="image" src="$music['url']"></img>
+					</a>
+				</div>  
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="url">Cover</label>
+				<div class="controls">
+					<input id="url" name="url" value="$music['url']" placeholder="url" type="url">
+					<a class="btn" onclick="get_image()">Get</a>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="name">Name</label>
+				<div class="controls">
+					<input id="name" name="name" value="$music['name']" placeholder="name" type="text">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="singer">Singer</label>
+				<div class="controls">
+					<input id="singer" name="singer" value="$music['singer']" placeholder="singer" type="text">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="lrc">Lrc</label>
+				<div class="controls">
+					<input id="lrc" name="lrc" value="$music['lrc']" placeholder="lrc_author" type="text">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="rhythm">Rhythm</label>
+				<div class="controls">
+					<input id="rhythm" name="rhythm" value="$music['rhythm']"placeholder="rhythm_author" type="text">
+				</div>
+			</div>
+			<div class="form-actions">
+				<button type="submit" class="btn btn-primary" >Create</button>
+			</div>
+		</fieldset>
+	</form>
+</div>
+

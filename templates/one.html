@@ -21,7 +21,8 @@ $def with(one,comments,fd,type)
 			</p>
 			<p>
 			$if fd:
-				<a href="delete?type=$type&id=$one['id']">delete</a>
+				<a class="btn btn-primary" href="edit?type=$type&id=$one['id']">edit</a>
+				<a class="btn" href="delete?type=$type&id=$one['id']">delete</a>
 			</p>
 		</div>
 	</div>

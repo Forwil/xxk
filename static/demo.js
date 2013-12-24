@@ -4,6 +4,3 @@
 		im.src = src.value;
 		return false;
 	}
-	var check_null = function(){
-		var ;	
-	}
