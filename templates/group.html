@@ -1,0 +1,45 @@
+$def with(one,flag,uflag,user,users)
+	 <div class="row">
+		<div style="float: left;">
+			<a class="thumbnail">
+				<img width="120px" height="120px"src="$one['url']">
+			</a>
+		</div>
+		<div style="float:left; margin-left:20px; width:50%;">
+		<ul>
+				<span><a href="/ggroup?id=$one['id']"><h4>$one['name']</h4></a></span>
+			<li>
+				<span style="color:gray;">abstract:</span>
+				<span>$one['abstract']</span>
+			</li>
+		</ul>
+			<p>
+			$if flag:
+				<a class="btn btn-primary" href="edit?type=ggroup&id=$one['id']">edit</a>
+				<a class="btn" href="delete?type=ggroup&id=$one['id']">delete</a>
+			$if uflag!=None and flag==False:
+				$if uflag:
+					<a class="btn" href="join?user_id=$user&group_id=$one['id']">Joined</a>
+				$else:
+					<a class="btn btn-primary" href="join?user_id=$user&group_id=$one['id']">Unjoin</a>
+			</p>
+		</div>
+
+	</div>
+	<hr/>
+$if users!=():
+	<h3>All members</h3>
+	<div class="row well">
+	$for user in users:
+		<div>
+			<a class="pull-left thumbnail" href="user?id=$user['id']">
+				<div>
+					<img src="http://www.gravatar.com/avatar/$user['token']?s=80"></img>
+				</div>
+				<div>
+					<span>$user["name"]</span>
+				</div>
+			</a>
+		</div>
+	</div>
+

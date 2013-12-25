@@ -1,6 +1,5 @@
-$def with(user,flag)
+$def with(user,flag,groups)
 <div class="container">
-	<div class="hero-unit">
 		<a class="pull-left thumbnail">
 			<div>
 				<img src="http://www.gravatar.com/avatar/$user['token']?s=120"></img>
@@ -37,5 +36,19 @@ $def with(user,flag)
 				<a class="btn btn-primary" href="edit?type=user&id=$user['id']">Edit</a>
 			</div>
 		</div>
-	</div>
 </div>
+$if groups!=():
+	<h3>Joined groups</h3>
+	<div class="well">
+		<div class="container">
+		$for group in groups:
+			<div>
+				<a class="pull-left thumbnail" href="ggroup?id=$group['id']">
+					<div style="width:80px;height:80px;">
+						<img src="$group['url']"></img>
+					</div>
+					$group["name"]
+				</a>
+			</div>
+		</div>
+	</div>

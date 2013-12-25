@@ -10,16 +10,18 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 urls = (
-    '/', 'index',
-    '/search','search',
-    '/signup','signup',
+	'/', 'index',
+	'/search','search',
+	'/signup','signup',
 	'/new','new',
 	'/music','music',
 	'/moive','moive',
 	'/book','book',
 	'/delete','delete',
 	'/edit','edit',
-	'/user','user'
+	'/user','user',
+	'/ggroup','group',
+	'/join','join'
 )
 
 render = web.template.render('templates/')
@@ -73,7 +75,6 @@ def edit_user(user):
 	run_sql(sql)
 	return 
 
-
 def new_manage(admin_id,typ,item_id):
 	sql = "insert into manage value('%s','%s','%s');" % (admin_id,item_id,typ)
 	run_sql(sql)
@@ -92,6 +93,15 @@ def get_max_id(typ):
 	sql = "select MAX(id) from %s;" %(typ)
 	res = get_one_sql(sql)
 	return res['MAX(id)']
+
+def new_group(group):
+	sql = "insert into ggroup value(null,'%s','%s','%s');" %(group['name'],group['url'],group['abstract'])
+	run_sql(sql)
+	return 
+def edit_group(group):
+	sql = "update ggroup set name='%s',url='%s',abstract='%s' where id=%s;" %(group['name'],group['url'],group['abstract'],group['id'])
+	run_sql(sql)
+	return 
 
 def new_book(book):
 	sql = "insert into book value(null,'%s','%s','%s','%s','%s',0);"%(book["url"],book["name"],book["author"],book["country"],book["language"])
@@ -144,6 +154,33 @@ def new_mo_mu(i):
 		sql = "insert into mo_mu value('%s','%s');" % (i["moive"],i["music"])
 		run_sql(sql)
 	return
+
+def new_u_g(user_id,group_id):
+	if is_u_g(user_id,group_id):
+		return False
+	else:	
+		sql = "insert into u_g value('%s','%s');" % (user_id,group_id)
+		run_sql(sql)
+
+def is_u_g(user_id,group_id):
+	sql = "select * from u_g where user_id='%s' and group_id='%s';" % (user_id,group_id)
+	return get_one_sql(sql)!=None
+
+def del_u_g(user_id,group_id):
+	if is_u_g(user_id,group_id):
+		sql = "delete from u_g where user_id='%s' and group_id='%s';" %(user_id,group_id)
+		run_sql(sql)	
+	else:
+		return False
+
+def find_g_u(group_id):
+	sql = "select * from user where id in (select user_id from u_g where group_id=%s);"%(group_id)
+	return get_all_sql(sql)
+
+def find_u_g(user_id):
+	sql = "select * from ggroup where id in (select group_id from u_g where user_id=%s);"%(user_id)
+	return get_all_sql(sql)
+
 
 def login(name,token):
 	web.setcookie('name',name,3600)
@@ -247,8 +284,8 @@ def render_one(i,typ):
 	result['asso'] = find_asso(typ,i['id'])
 	return my_page(render.one(result,render.comments(comm),flag,typ))
 
-def render_list(typ):
-	return my_page(render.list(typ,find_by_name(typ,"")))
+def render_list(typ,name):
+	return my_page(render.list(typ,find_by_name(typ,name)))
 
 def new_some(i,typ):
 	if web.cookies().get("admin","")!="" or web.cookies().get("name","")=="":
@@ -256,6 +293,18 @@ def new_some(i,typ):
 		return 
 	new_comment(get_now_id("user"),i["id"],typ,i["content"])
 	web.seeother("/%s?id=%s" % (typ,i["id"]))
+class join:
+	def GET(self):
+		i = web.input()
+		if ("user_id" not in i) or ("group_id" not in i):
+			web.seeother("/")
+			return 	
+		if is_u_g(i["user_id"],i["group_id"]):
+			del_u_g(i["user_id"],i["group_id"])
+		else:
+			new_u_g(i["user_id"],i["group_id"])
+		web.seeother("/ggroup?id=%s" % (i["group_id"]))
+		return 
 
 class delete:
 	def GET(self):
@@ -267,8 +316,12 @@ class music:
 	def GET(self):
 		i = web.input()
 		if "id" in i:
+			one = find_by_id("music",i['id'])
+			if one==None:
+				web.seeother("music")
+				return
 			return render_one(i,"music")
-		return render_list("music")
+		return render_list("music","")
 	def POST(self):
 		i = web.input()
 		new_some(i,"music")
@@ -277,8 +330,12 @@ class moive:
 	def GET(self):
 		i = web.input()
 		if "id" in i:
+			one = find_by_id("moive",i['id'])
+			if one==None:
+				web.seeother("moive")
+				return
 			return render_one(i,"moive")
-		return render_list("moive")
+		return render_list("moive","")
 	def POST(self):
 		i = web.input()
 		new_some(i,"moive")
@@ -287,17 +344,41 @@ class book:
 	def GET(self):
 		i = web.input()
 		if "id" in i:
+			one = find_by_id("book",i['id'])
+			if one==None:
+				web.seeother("book")
+				return
 			return render_one(i,"book")
-		return render_list("book")
+		return render_list("book","")
 	def POST(self):
 		i = web.input()
 		new_some(i,"book")
+
+class group:
+	def GET(self):
+		i = web.input()
+		if "id" in i:
+			one = find_by_id("ggroup",i['id'])
+			if one==None:
+				web.seeother("ggroup")
+				return
+			ad = find_admin("ggroup",i["id"])
+			flag = not(None == web.cookies().get("admin",None) or get_now_id("admin")!= ad)
+			uflag = web.cookies().get("admin",None)
+			if uflag==None:
+				uflag = is_u_g(get_now_id("user"),i['id'])	
+			return my_page(render.group(one,flag,uflag,get_now_id("user"),find_g_u(i['id'])))
+		al = find_by_name("ggroup","")
+		return my_page(render.groups(al))
 
 class edit:
 	def GET(self):
 		i = web.input()
 		t = i.get("type","")
 		one = find_by_id(t,i['id'])
+		if one==None:
+			web.seeother("/")
+			return 
 		if t == "book":
 			return my_page(render.editbook(one))
 		elif t == "moive":
@@ -306,6 +387,9 @@ class edit:
 			return my_page(render.editmusic(one))
 		elif t == "user":
 			return my_page(render.edituser(one))
+		elif t == "ggroup":
+			return my_page(render.editgroup(one))
+
 	def POST(self):
 		i = web.input()
 		if i["type"] == "book":
@@ -316,6 +400,8 @@ class edit:
 			edit_music(i)
 		if i["type"] == "user":
 			edit_user(i)	
+		if i["type"] == "ggroup":
+			edit_group(i)
 		web.seeother("/%s"% (i["type"]))
 
 class new:
@@ -332,6 +418,8 @@ class new:
 			return my_page(render.newmo_bo(find_by_name("moive",""),find_by_name("book","")))
 		elif t == "mo_mu":
 			return my_page(render.newmo_mu(find_by_name("moive",""),find_by_name("music","")))
+		elif t == "ggroup":
+			return my_page(render.newgroup())
 
 	def POST(self):
 		i = web.input()
@@ -345,7 +433,9 @@ class new:
 			new_mo_bo(i)
 		if i["type"] == "mo_mu":
 			new_mo_mu(i)
-		if i["type"] == "book" or i["type"] == "moive" or i["type"] == "music":
+		if i["type"] == "ggroup":
+			new_group(i)
+		if i["type"] == "book" or i["type"] == "moive" or i["type"] == "music" or i["type"]=="ggroup":
 			new_manage(get_now_id("admin"),i["type"],get_max_id(i["type"]))
 			web.seeother("/" + i["type"])
 		else:
@@ -360,7 +450,8 @@ class signup:
 		if find_user_by_email(i["email"]) != None:
 			web.seeother("/signup")
 		else:
-			login(*new_user(i))
+			if i['passwd']==i['passwd_confirm'] and i['name']!="":
+				login(*new_user(i))
 			web.seeother("/")
 
 class user:
@@ -376,7 +467,8 @@ class user:
 					flag = False
 			else:
 				flag = False
-			return my_page(render.user(find_by_id("user",i['id']),flag))
+			print find_u_g(i['id'])
+			return my_page(render.user(find_by_id("user",i['id']),flag,find_u_g(i['id'])))
 
 	def POST(self):
 		return 
@@ -385,11 +477,11 @@ class search:
 	def POST(self):
 		i = web.input()
 		if i['type'] == "book":
-			return my_page(render.books(find_by_name("book",i["name"])))
+			return my_page(render.list("book",find_by_name("book",i["name"])))
 		elif i['type'] == "moive":
-			return my_page(render.moives(find_by_name("moive",i["name"])))
+			return my_page(render.list("moive",find_by_name("moive",i["name"])))
 		elif i['type'] == "music":
-			return my_page(render.musics(find_by_name("music",i["name"])))
+			return my_page(render.list("music",find_by_name("music",i["name"])))
 
 class index:
 	def GET(self):

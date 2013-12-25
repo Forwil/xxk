@@ -8,6 +8,7 @@ $def with(user,token)
 						<li><a href="/music">Music</a></li>
 						<li><a href="/moive">Moive</a></li>
 						<li><a href="/book">Book</a></li>
+						<li><a href="/ggroup">Group</a></li>
 							$if user:
 								<li><image src="http://www.gravatar.com/avatar/$token?s=40" ></li>
 								<li><a href="/user">$user</a></li>
@@ -22,9 +23,9 @@ $def with(user,token)
 						  $if user:
 							  <input type="text" class="span2 search-query" name="name" placeholder="Search by name">
 								  <select name="type" class="span2">
-									<option value="1">For Music</option>
-									<option value="2">For Moive</option>
-									<option value="3">For Book</option>
+									<option value="music">For Music</option>
+									<option value="moive">For Moive</option>
+									<option value="book">For Book</option>
 								  </select>
 							  <button type="submit" class="btn">Search</button>
 						  $else:

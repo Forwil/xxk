@@ -1,0 +1,19 @@
+$def with(group)
+$for one in group:
+	<div class="well">
+		<div style="float: left;">
+			<a class="thumbnail">
+				<img width="80px" height="80px"src="$one['url']">
+			</a>
+		</div>
+		<div style="margin-left:100px;">
+			<ul>
+					<span><a href="/ggroup?id=$one['id']"><h4>$one['name']</h4></a></span>
+				<li>
+					<span style="color:gray;">abstract:</span>
+					<span>$one['abstract']</span>
+				</li>
+			</ul>
+		</div>
+	</div>
+
