@@ -34,7 +34,7 @@ $def with(one,comments,fd,type)
 			<h4>Link</h4>
 			<hr/>
 			$if type=="moive":
-				$if one['asso']['book']!={}:
+				$if one['asso']['book']!=():
 					<h5>Book</h5>
 				$for i in one['asso']['book']:
 					<div>
@@ -42,7 +42,7 @@ $def with(one,comments,fd,type)
 							<img width="100px" height="100px" src="$i['url']" title="$i['name']">
 						</a>
 					</div>
-				$if one['asso']['music']!={}:
+				$if one['asso']['music']!=():
 					<h5>Music</h5>
 				$for i in one['asso']['music']:
 					<div>	
@@ -51,7 +51,7 @@ $def with(one,comments,fd,type)
 						</a>
 					</div>
 			$elif type=="book" or type=="music":
-				$if one['asso']['moive']!={}:
+				$if one['asso']['moive']!=():
 					<h5>Moive</h5>
 				$for i in one['asso']['moive']:
 					<div>	
