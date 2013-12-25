@@ -1,0 +1,30 @@
+$def with(moive,book)
+ <div class="hero-unit">	
+	<form class="form-horizontal" accept-charset="UTF-8" action="/new?type=mo_bo" method="post">
+		<fieldset>	
+			<div class="control-group">
+				<label class="control-label" for="moive">Moive</label>
+				<div class="controls">
+					 <select id="moive" name="moive" class="span3">
+					$for i in moive:
+						<option value="$i['id']">$i['id']:$i['name']</option>
+					 </select>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="book">Book</label>
+				<div class="controls">
+					 <select id="book" name="book"class="span3">
+					$for i in book:
+						<option value="$i['id']">$i['id']:$i['name']</option>
+					 </select>
+				</div>
+			</div>
+
+			<div class="form-actions">
+				<button type="submit" class="btn btn-primary" >Create</button>
+			</div>
+		</fieldset>
+	</form>
+</div>               

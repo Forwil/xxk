@@ -79,7 +79,7 @@ time datetime,
 id int primary key auto_increment
 );
 
-create tablemo_b(
+create table mo_bo(
 moive_id int,
 book_id int,
 foreign key (moive_id) references moive(id),
@@ -87,7 +87,7 @@ foreign key (book_id) references book(id),
 primary key (moive_id,book_id)
 );
 
-create table mo_m(
+create table mo_mu(
 moive_id int,
 music_id int,
 foreign key (moive_id) references moive(id),

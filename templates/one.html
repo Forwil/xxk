@@ -5,11 +5,11 @@ $def with(one,comments,fd,type)
 				<img width="120px" height="120px"src="$one['url']">
 			</a>
 		</div>
-			<div style="margin-left:150px;">
+		<div style="float:left; margin-left:20px; width:50%;">
 		<ul>
 				<span><a href="/$type?id=$one['id']"><h4>$one['name']</h4></a></span>
 			$for i in one:
-				$if i!='abstract'and i!='id' and i!='url' and i!='name' and i!='comments_num':	
+				$if i!='asso' and i!='abstract'and i!='id' and i!='url' and i!='name' and i!='comments_num':	
 					<li>
 						<span style="color:gray;">$i:</span>
 						<span>$one[i]</span>
@@ -29,6 +29,36 @@ $def with(one,comments,fd,type)
 				<a class="btn btn-primary" href="edit?type=$type&id=$one['id']">edit</a>
 				<a class="btn" href="delete?type=$type&id=$one['id']">delete</a>
 			</p>
+		</div>
+		<div class="well" style="width:15%;background-color:#FFFFEE;float:right;">
+			<h4>Link</h4>
+			<hr/>
+			$if type=="moive":
+				$if one['asso']['book']!={}:
+					<h5>Book</h5>
+				$for i in one['asso']['book']:
+					<div>
+						<a href="book?id=$i['id']" class="thumbnail">
+							<img width="100px" height="100px" src="$i['url']" title="$i['name']">
+						</a>
+					</div>
+				$if one['asso']['music']!={}:
+					<h5>Music</h5>
+				$for i in one['asso']['music']:
+					<div>	
+						<a href="music?id=$i['id']" class="thumbnail">
+							<img width="100px" height="100px" src="$i['url']" title="$i['name']">
+						</a>
+					</div>
+			$elif type=="book" or type=="music":
+				$if one['asso']['moive']!={}:
+					<h5>Moive</h5>
+				$for i in one['asso']['moive']:
+					<div>	
+						<a href="moive?id=$i['id']" class="thumbnail">
+							<img width="100px" height="100px" src="$i['url']" title="$i['name']">
+						</a>
+					</div>
 		</div>
 	</div>
 $:comments

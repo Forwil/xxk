@@ -131,6 +131,20 @@ def new_comment(user_id,item_id,typ,content):
 	run_sql(sql)
 	return 
 
+def new_mo_bo(i):
+	sql = "select * from mo_bo where moive_id ='%s' and book_id='%s';"%(i["moive"],i["book"])
+	if get_one_sql(sql)==None:
+		sql = "insert into mo_bo value('%s','%s');" % (i["moive"],i["book"])
+		run_sql(sql)
+	return
+
+def new_mo_mu(i):
+	sql = "select * from mo_mu where moive_id ='%s' and music_id='%s';"%(i["moive"],i["music"])
+	if get_one_sql(sql)==None:
+		sql = "insert into mo_mu value('%s','%s');" % (i["moive"],i["music"])
+		run_sql(sql)
+	return
+
 def login(name,token):
 	web.setcookie('name',name,3600)
 	web.setcookie('token',token,3600)
@@ -206,11 +220,31 @@ def find_admin(typ,id):
 	else:
 		return result['admin_id']		
 
+def find_asso(typ,id):
+	ret = {}
+	if typ == "moive":
+		sql = "select id,name,url from book where id in (select book_id from mo_bo where moive_id=%s);" % (id)
+		book = get_all_sql(sql)		
+		ret["book"] = book
+		sql = "select id,name,url from music where id in (select music_id from mo_mu where moive_id=%s);" % (id)
+		music = get_all_sql(sql)
+		ret["music"] = music
+	if typ == "music":
+		sql = "select id,name,url from moive where id in (select moive_id from mo_mu where music_id=%s);" % (id)
+		moive = get_all_sql(sql)
+		ret["moive"] = moive
+	if typ == "book":
+		sql = "select id,name,url from moive where id in (select moive_id from mo_bo where book_id=%s);" % (id)
+		moive = get_all_sql(sql)
+		ret["moive"] = moive
+	return ret
+		
 def render_one(i,typ):
 	result = find_by_id(typ,i["id"])
 	comm = find_comments(typ,i["id"])
 	ad = find_admin(typ,i["id"])
 	flag = not(None == web.cookies().get("admin",None) or get_now_id("admin")!= ad)
+	result['asso'] = find_asso(typ,i['id'])
 	return my_page(render.one(result,render.comments(comm),flag,typ))
 
 def render_list(typ):
@@ -294,6 +328,11 @@ class new:
 			return my_page(render.newmoive())
 		elif t == "music":
 			return my_page(render.newmusic())
+		elif t == "mo_bo":
+			return my_page(render.newmo_bo(find_by_name("moive",""),find_by_name("book","")))
+		elif t == "mo_mu":
+			return my_page(render.newmo_mu(find_by_name("moive",""),find_by_name("music","")))
+
 	def POST(self):
 		i = web.input()
 		if i["type"] == "book":
@@ -302,8 +341,15 @@ class new:
 			new_moive(i)
 		if i["type"] == "music":
 			new_music(i)
-		new_manage(get_now_id("admin"),i["type"],get_max_id(i["type"]))
-		web.seeother("/" + i["type"])
+		if i["type"] == "mo_bo":
+			new_mo_bo(i)
+		if i["type"] == "mo_mu":
+			new_mo_mu(i)
+		if i["type"] == "book" or i["type"] == "moive" or i["type"] == "music":
+			new_manage(get_now_id("admin"),i["type"],get_max_id(i["type"]))
+			web.seeother("/" + i["type"])
+		else:
+			web.seeother("/")
 
 class signup:
 	def GET(self):
