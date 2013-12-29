@@ -15,7 +15,7 @@ urls = (
 	'/signup','signup',
 	'/new','new',
 	'/music','music',
-	'/moive','moive',
+	'/movie','movie',
 	'/book','book',
 	'/delete','delete',
 	'/edit','edit',
@@ -98,6 +98,7 @@ def new_group(group):
 	sql = "insert into ggroup value(null,'%s','%s','%s');" %(group['name'],group['url'],group['abstract'])
 	run_sql(sql)
 	return 
+
 def edit_group(group):
 	sql = "update ggroup set name='%s',url='%s',abstract='%s' where id=%s;" %(group['name'],group['url'],group['abstract'],group['id'])
 	run_sql(sql)
@@ -113,13 +114,13 @@ def edit_book(book):
 	run_sql(sql)
 	return 
 
-def new_moive(moive):
-	sql = "insert into moive value(null,'%s','%s','%s','%s','%s','%s','%s','%s',0);"%(moive["url"],moive["name"],moive["director"],moive["date"],moive["language"],moive["length"],moive["actor"],moive["abstract"])
+def new_movie(movie):
+	sql = "insert into movie value(null,'%s','%s','%s','%s','%s','%s','%s','%s',0);"%(movie["url"],movie["name"],movie["director"],movie["date"],movie["language"],movie["length"],movie["actor"],movie["abstract"])
 	run_sql(sql)
 	return 
 
-def edit_moive(moive):
-	sql = "update moive set url='%s',name='%s',director='%s',date='%s',language='%s',length='%s',actor='%s',abstract='%s' where id='%s';"%(moive["url"],moive["name"],moive["director"],moive["date"],moive["language"],moive["length"],moive["actor"],moive["abstract"],moive['id'])
+def edit_movie(movie):
+	sql = "update movie set url='%s',name='%s',director='%s',date='%s',language='%s',length='%s',actor='%s',abstract='%s' where id='%s';"%(movie["url"],movie["name"],movie["director"],movie["date"],movie["language"],movie["length"],movie["actor"],movie["abstract"],movie['id'])
 	run_sql(sql)
 	return
 
@@ -137,21 +138,19 @@ def new_comment(user_id,item_id,typ,content):
 	t = time.strftime("%Y-%m-%d %H:%M:%S")
 	sql = "insert into comment value('%s','%s','%s','%s','%s',null);" % (user_id,item_id,typ,content,t)
 	run_sql(sql)
-	sql = "update %s set comments_num = comments_num + 1 where id=%s;" %(typ,item_id)
-	run_sql(sql)
 	return 
 
 def new_mo_bo(i):
-	sql = "select * from mo_bo where moive_id ='%s' and book_id='%s';"%(i["moive"],i["book"])
+	sql = "select * from mo_bo where movie_id ='%s' and book_id='%s';"%(i["movie"],i["book"])
 	if get_one_sql(sql)==None:
-		sql = "insert into mo_bo value('%s','%s');" % (i["moive"],i["book"])
+		sql = "insert into mo_bo value('%s','%s');" % (i["movie"],i["book"])
 		run_sql(sql)
 	return
 
 def new_mo_mu(i):
-	sql = "select * from mo_mu where moive_id ='%s' and music_id='%s';"%(i["moive"],i["music"])
+	sql = "select * from mo_mu where movie_id ='%s' and music_id='%s';"%(i["movie"],i["music"])
 	if get_one_sql(sql)==None:
-		sql = "insert into mo_mu value('%s','%s');" % (i["moive"],i["music"])
+		sql = "insert into mo_mu value('%s','%s');" % (i["movie"],i["music"])
 		run_sql(sql)
 	return
 
@@ -237,14 +236,11 @@ def find_comments(typ,id):
 			resdis[i]["del"] = 1
 		else:
 			resdis[i]["del"] = 0
-		resdis[i]["id"] = result[i]["user_id"]
+		resdis[i]["user_id"] = result[i]["user_id"]
+		resdis[i]["id"] = result[i]["id"]
 	return resdis
 
 def drop(typ,id):
-	if typ=="comment":
-		a = find_by_id(typ,id)
-		sql = "update %s set comments_num = comments_num-1 where id=%s;"%(a["type"],a["id"])
-		run_sql(sql)
 	sql = "delete from %s where id=%s;"%(typ,id)
 	run_sql(sql)
 	return
@@ -259,21 +255,21 @@ def find_admin(typ,id):
 
 def find_asso(typ,id):
 	ret = {}
-	if typ == "moive":
-		sql = "select id,name,url from book where id in (select book_id from mo_bo where moive_id=%s);" % (id)
+	if typ == "movie":
+		sql = "select id,name,url from book where id in (select book_id from mo_bo where movie_id=%s);" % (id)
 		book = get_all_sql(sql)		
 		ret["book"] = book
-		sql = "select id,name,url from music where id in (select music_id from mo_mu where moive_id=%s);" % (id)
+		sql = "select id,name,url from music where id in (select music_id from mo_mu where movie_id=%s);" % (id)
 		music = get_all_sql(sql)
 		ret["music"] = music
 	if typ == "music":
-		sql = "select id,name,url from moive where id in (select moive_id from mo_mu where music_id=%s);" % (id)
-		moive = get_all_sql(sql)
-		ret["moive"] = moive
+		sql = "select id,name,url from movie where id in (select movie_id from mo_mu where music_id=%s);" % (id)
+		movie = get_all_sql(sql)
+		ret["movie"] = movie
 	if typ == "book":
-		sql = "select id,name,url from moive where id in (select moive_id from mo_bo where book_id=%s);" % (id)
-		moive = get_all_sql(sql)
-		ret["moive"] = moive
+		sql = "select id,name,url from movie where id in (select movie_id from mo_bo where book_id=%s);" % (id)
+		movie = get_all_sql(sql)
+		ret["movie"] = movie
 	return ret
 		
 def render_one(i,typ):
@@ -310,7 +306,8 @@ class delete:
 	def GET(self):
 		i = web.input()
 		drop(i["type"],i["id"])
-		return '<script language="javascript">window.location.href = "http://localhost:8080/"</script>'
+		web.seeother("/")
+		return
 
 class music:
 	def GET(self):
@@ -326,19 +323,19 @@ class music:
 		i = web.input()
 		new_some(i,"music")
 
-class moive:
+class movie:
 	def GET(self):
 		i = web.input()
 		if "id" in i:
-			one = find_by_id("moive",i['id'])
+			one = find_by_id("movie",i['id'])
 			if one==None:
-				web.seeother("moive")
+				web.seeother("movie")
 				return
-			return render_one(i,"moive")
-		return render_list("moive","")
+			return render_one(i,"movie")
+		return render_list("movie","")
 	def POST(self):
 		i = web.input()
-		new_some(i,"moive")
+		new_some(i,"movie")
 
 class book:
 	def GET(self):
@@ -381,8 +378,8 @@ class edit:
 			return 
 		if t == "book":
 			return my_page(render.editbook(one))
-		elif t == "moive":
-			return my_page(render.editmoive(one))
+		elif t == "movie":
+			return my_page(render.editmovie(one))
 		elif t == "music":
 			return my_page(render.editmusic(one))
 		elif t == "user":
@@ -394,8 +391,8 @@ class edit:
 		i = web.input()
 		if i["type"] == "book":
 			edit_book(i)
-		if i["type"] == "moive":
-			edit_moive(i)
+		if i["type"] == "movie":
+			edit_movie(i)
 		if i["type"] == "music":
 			edit_music(i)
 		if i["type"] == "user":
@@ -410,14 +407,14 @@ class new:
 		t = i.get("type","")
 		if t == "book":
 			return my_page(render.newbook())
-		elif t == "moive":
-			return my_page(render.newmoive())
+		elif t == "movie":
+			return my_page(render.newmovie())
 		elif t == "music":
 			return my_page(render.newmusic())
 		elif t == "mo_bo":
-			return my_page(render.newmo_bo(find_by_name("moive",""),find_by_name("book","")))
+			return my_page(render.newmo_bo(find_by_name("movie",""),find_by_name("book","")))
 		elif t == "mo_mu":
-			return my_page(render.newmo_mu(find_by_name("moive",""),find_by_name("music","")))
+			return my_page(render.newmo_mu(find_by_name("movie",""),find_by_name("music","")))
 		elif t == "ggroup":
 			return my_page(render.newgroup())
 
@@ -425,8 +422,8 @@ class new:
 		i = web.input()
 		if i["type"] == "book":
 			new_book(i)
-		if i["type"] == "moive":
-			new_moive(i)
+		if i["type"] == "movie":
+			new_movie(i)
 		if i["type"] == "music":
 			new_music(i)
 		if i["type"] == "mo_bo":
@@ -435,7 +432,7 @@ class new:
 			new_mo_mu(i)
 		if i["type"] == "ggroup":
 			new_group(i)
-		if i["type"] == "book" or i["type"] == "moive" or i["type"] == "music" or i["type"]=="ggroup":
+		if i["type"] == "book" or i["type"] == "movie" or i["type"] == "music" or i["type"]=="ggroup":
 			new_manage(get_now_id("admin"),i["type"],get_max_id(i["type"]))
 			web.seeother("/" + i["type"])
 		else:
@@ -478,8 +475,8 @@ class search:
 		i = web.input()
 		if i['type'] == "book":
 			return my_page(render.list("book",find_by_name("book",i["name"])))
-		elif i['type'] == "moive":
-			return my_page(render.list("moive",find_by_name("moive",i["name"])))
+		elif i['type'] == "movie":
+			return my_page(render.list("movie",find_by_name("movie",i["name"])))
 		elif i['type'] == "music":
 			return my_page(render.list("music",find_by_name("music",i["name"])))
 

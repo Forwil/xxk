@@ -14,7 +14,7 @@ $def with(one,comments,fd,type)
 						<span style="color:gray;">$i:</span>
 						<span>$one[i]</span>
 					</li>
-		$if type=="moive":
+		$if type=="movie":
 			<li>
 				<span style="color:gray;">abstract:</span>
 				<span>$one['abstract']</span>
@@ -33,7 +33,7 @@ $def with(one,comments,fd,type)
 		<div class="well" style="width:15%;background-color:#FFFFEE;float:right;">
 			<h4>Link</h4>
 			<hr/>
-			$if type=="moive":
+			$if type=="movie":
 				$if one['asso']['book']!=():
 					<h5>Book</h5>
 				$for i in one['asso']['book']:
@@ -51,11 +51,11 @@ $def with(one,comments,fd,type)
 						</a>
 					</div>
 			$elif type=="book" or type=="music":
-				$if one['asso']['moive']!=():
+				$if one['asso']['movie']!=():
 					<h5>Moive</h5>
-				$for i in one['asso']['moive']:
+				$for i in one['asso']['movie']:
 					<div>	
-						<a href="moive?id=$i['id']" class="thumbnail">
+						<a href="movie?id=$i['id']" class="thumbnail">
 							<img width="100px" height="100px" src="$i['url']" title="$i['name']">
 						</a>
 					</div>

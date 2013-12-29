@@ -1,12 +1,12 @@
-$def with(moive,music)
+$def with(movie,music)
  <div class="hero-unit">	
 	<form class="form-horizontal" accept-charset="UTF-8" action="/new?type=mo_mu" method="post">
 		<fieldset>	
 			<div class="control-group">
-				<label class="control-label" for="moive">Moive</label>
+				<label class="control-label" for="movie">Moive</label>
 				<div class="controls">
-					 <select id="moive" name="moive" class="span3">
-					$for i in moive:
+					 <select id="movie" name="movie" class="span3">
+					$for i in movie:
 						<option value="$i['id']">$i['id']:$i['name']</option>
 					 </select>
 				</div>

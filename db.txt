@@ -20,7 +20,7 @@ passwd varchar(30),
 token varchar(32)
 );
 
-create table moive
+create table movie
 (
 id int primary key auto_increment,
 url varchar(100),
@@ -83,19 +83,19 @@ id int primary key auto_increment
 );
 
 create table mo_bo(
-moive_id int,
+movie_id int,
 book_id int,
-foreign key (moive_id) references moive(id),
+foreign key (movie_id) references movie(id),
 foreign key (book_id) references book(id),
-primary key (moive_id,book_id)
+primary key (movie_id,book_id)
 );
 
 create table mo_mu(
-moive_id int,
+movie_id int,
 music_id int,
-foreign key (moive_id) references moive(id),
+foreign key (movie_id) references movie(id),
 foreign key (music_id) references music(id),
-primary key (moive_id,music_id)
+primary key (movie_id,music_id)
 );
 
 create table manage(
@@ -106,3 +106,119 @@ type varchar(10),
 primary key (item_id,type,admin_id)
 );
 
+
+
+CREATE TRIGGER Delete_Movie #删除电影前执行触发器
+BEFORE DELETE ON movie
+FOR EACH ROW
+BEGIN
+DELETE #删除管理信息
+FROM manage
+WHERE old.id = item_id AND type = "movie";
+DELETE #删除电影、音乐联系
+FROM mo_mu
+WHERE old.id = movie_id;
+DELETE #删除电影、书籍联系
+FROM mo_bo
+WHERE old.id = movie_id;
+DELETE #删除评论
+FROM comment
+WHERE old.id = item_id AND type = "movie";
+END;
+
+CREATE TRIGGER Delete_Music #删除音乐前执行触发器
+BEFORE DELETE ON music
+FOR EACH ROW
+BEGIN
+DELETE #删除管理信息
+FROM manage
+WHERE old.id = item_id AND type = "music";
+DELETE #删除电影、音乐联系
+FROM mo_mu
+WHERE old.id = music_id;
+DELETE #删除评论
+FROM comment
+WHERE old.id = item_id AND type = "music";
+END;
+
+CREATE TRIGGER Delete_Book #删除书籍前执行触发器
+BEFORE DELETE ON book
+FOR EACH ROW
+BEGIN
+DELETE #删除管理信息
+FROM manage
+WHERE old.id = item_id AND type = "book";
+DELETE #删除电影、音乐联系
+FROM mo_bo
+WHERE old.id = book_id;
+DELETE #删除评论
+FROM comment
+WHERE old.id = item_id AND type = "book";
+END;
+
+CREATE TRIGGER Delete_Group_c #删除电影前执行触发器
+BEFORE DELETE ON ggroup
+FOR EACH ROW
+BEGIN
+DELETE #删除管理信息
+FROM manage
+WHERE old.id = item_id AND type = "ggroup";
+DELETE #删除小组、用户联系
+FROM u_g
+WHERE old.id = group_id;
+END;
+
+-----------------------------------------------------
+
+CREATE PROCEDURE ADD_COMMENT(item_id INT, type VARCHAR(10))
+BEGIN
+IF type = "movie" THEN
+UPDATE movie SET comments_num = comments_num + 1 WHERE item_id = id AND type = "movie";
+ELSE IF type = "music" THEN
+UPDATE music SET comments_num = comments_num + 1 WHERE item_id = id AND type = "music";
+ELSE
+UPDATE book SET comments_num = comments_num + 1 WHERE item_id = id AND type = "book";
+END IF;
+END IF;
+END;
+
+
+CREATE PROCEDURE SUB_COMMENT(item_id INT, type VARCHAR(10))
+BEGIN
+IF type = "movie" THEN
+UPDATE movie SET comments_num = comments_num - 1 WHERE item_id = id AND type = "movie";
+ELSE IF type = "music" THEN
+UPDATE music SET comments_num = comments_num - 1 WHERE item_id = id AND type = "music";
+ELSE
+UPDATE book SET comments_num = comments_num - 1 WHERE item_id = id AND type = "book";
+END IF;
+END IF;
+END;
+
+CREATE TRIGGER Insert_Comment #插入评论前执行触发器
+BEFORE INSERT ON comment
+FOR EACH ROW
+BEGIN
+IF new.type = "movie" THEN 
+CALL ADD_COMMENT(new.item_id, "movie");
+ELSE IF new.type = "music" THEN
+CALL ADD_COMMENT(new.item_id, "music");
+ELSE
+CALL ADD_COMMENT(new.item_id, "book");
+END IF;
+END IF;
+END;
+
+CREATE TRIGGER Delete_Comment #插入评论前执行触发器
+BEFORE DELETE ON comment
+FOR EACH ROW
+BEGIN
+IF old.type = "movie" THEN 
+CALL SUB_COMMENT(old.item_id, "movie");
+ELSE IF old.type = "music" THEN
+CALL SUB_COMMENT(old.item_id, "music");
+ELSE
+CALL SUB_COMMENT(old.item_id, "book");
+END IF;
+END IF;
+END;
